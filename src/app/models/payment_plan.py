@@ -1,7 +1,6 @@
 from sqlalchemy.dialects.postgresql import UUID
 
 from src.app.models import db
-
 from src.app.models.enums import payment_type
 
 

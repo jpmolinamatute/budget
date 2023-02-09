@@ -1,4 +1,5 @@
 from sqlalchemy.dialects.postgresql import ENUM
+
 from src.app.models import db
 
 

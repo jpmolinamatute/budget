@@ -1,8 +1,7 @@
 from sqlalchemy.dialects.postgresql import UUID
 
 from src.app.models import db
-
-from src.app.models.enums import provider_type, payment_type
+from src.app.models.enums import payment_type, provider_type
 
 
 class Bill(db.Model):  # type: ignore[name-defined]
