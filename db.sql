@@ -91,4 +91,5 @@ WHERE budget_id = (
     FROM budget
     WHERE is_current = TRUE
 )
-GROUP BY payment;
+GROUP BY payment
+HAVING SUM(amount) > 0;

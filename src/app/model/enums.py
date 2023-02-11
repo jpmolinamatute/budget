@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import ENUM
 
-from src.app.models import db
+from src.app.model import db
 
 
 payment_type = ENUM(

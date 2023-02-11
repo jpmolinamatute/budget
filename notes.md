@@ -122,5 +122,24 @@ GROUP BY payment_type;
 1. Close current budget. Set is_current = false. Closing is only posible if all expenses arepaid. return True if it was closed
 2. Only Open a new current budget if a previous budget was closed successfully. Set is_current = true
 3. Copy template rows into bill table, generate real duedates and process biweekly bills
-4. Generate rows into the salary table. This means dates and how many rows per month are based on latest date from previous salaries
-5. Generate rows into payment plan, get basic cost from total_per_payment_type and divide them by the number of pay checks
+4. We need to edit the current budget a this point so that the generated payment plan (in next step) make senses. Ex there is not point to plan to pay a $0 payment type.
+5. Generate rows into the salary table. This means dates and how many rows per month are based on latest date from previous salaries. Get salary base from last salary row.
+6. Generate rows into payment plan, get basic cost from total_per_payment_type and divide them by the number of pay checks
+
+### Features ###
+
+1. create new budget, get budget id
+2. close previous budget
+3. update/add/remove bill. get list of bills
+4. update/add/remove payment. get list of payments
+5. update salary. get list of salaries
+
+### Endpoints ###
+
+1. /budget: [POST, GET, UPDATE]
+2. /bill: [GET, POST]
+3. /bill/<bill_id>: [UPDATE, DELETE]
+4. /payment: [GET, POST]
+5. /payment/<payment_id>: [UPDATE, DELETE]
+6. /salary: [GET]
+7. /salary/<salary_id>: [UPDATE]

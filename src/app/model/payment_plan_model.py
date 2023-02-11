@@ -1,13 +1,13 @@
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.app.models import db
-from src.app.models.enums import payment_type
+from src.app.model import db
+from src.app.model.enums import payment_type
 
 
-class PaymentPlan(db.Model):  # type: ignore[name-defined]
+class PaymentPlanModel(db.Model):  # type: ignore[name-defined]
     __tablename__ = "payment_plan"
 
-    id = db.Column(UUID(as_uuid=True), primary_key=True)
+    id_ = db.Column("id", UUID(as_uuid=True), primary_key=True)
     payment = db.Column(payment_type, nullable=False)
     budget_id = db.Column(db.ForeignKey("budget.id"), nullable=False)
     salary_id = db.Column(db.ForeignKey("salary.id"), nullable=False)

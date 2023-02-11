@@ -2,15 +2,16 @@ from os import environ
 
 from flask import Flask
 
-from src.app.models import db
-from src.app.models.enums import payment_type, provider_type
-from src.app.routes.basic import endpoint
+from src.app.model import db
+from src.app.model.enums import payment_type, provider_type
+from src.app.routes.db_route import db_endpoint
+from src.app.routes.web_route import web_endpoint
 
 
-from src.app.models.budget import Budget  # isort:skip
-from src.app.models.bill import Bill  # isort:skip
-from src.app.models.salary import Salary  # isort:skip
-from src.app.models.payment_plan import PaymentPlan  # isort:skip
+from src.app.model.budget_model import BudgetModel  # isort:skip
+from src.app.model.bill_model import BillModel  # isort:skip
+from src.app.model.salary_model import SalaryModel  # isort:skip
+from src.app.model.payment_plan_model import PaymentPlanModel  # isort:skip
 
 
 def create_app():
@@ -26,10 +27,19 @@ def create_app():
         SQLALCHEMY_DATABASE_URI=database_uri,
     )
 
-    app.register_blueprint(endpoint)
+    app.register_blueprint(db_endpoint)
+    app.register_blueprint(web_endpoint)
     db.init_app(app)
 
     return app
 
 
-__all__ = ["Budget", "Bill", "Salary", "PaymentPlan", "payment_type", "provider_type", "create_app"]
+__all__ = [
+    "BudgetModel",
+    "BillModel",
+    "SalaryModel",
+    "PaymentPlanModel",
+    "payment_type",
+    "provider_type",
+    "create_app",
+]
