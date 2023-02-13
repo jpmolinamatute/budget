@@ -2,6 +2,9 @@ import uuid
 from datetime import datetime
 from typing import TypedDict
 
+from sqlalchemy import desc
+
+from src.app.controller import get_biweekly_dates
 from src.app.model import db
 from src.app.model.bill_model import BillModel
 from src.app.model.bill_template_model import BillTemplateModel
@@ -35,37 +38,30 @@ class BillControler:
             )
         return bill_list
 
-    def get_bills_biweekly_dates(self, month: int, year: int) -> tuple[datetime, datetime]:
-        first_date = datetime(year, month, 1)
-        second_date = datetime(year, month, 15)
-        return first_date, second_date
+    @staticmethod
+    def get_dates(provider: str) -> list[datetime]:
+        bill_filtered = db.session.query(BillModel.due_date).filter_by(provider=provider)
+        bill = bill_filtered.order_by(desc(BillModel.due_date)).first()
+        if not bill:
+            raise Exception("No bill found")
+        return get_biweekly_dates(bill[0])
 
     def process_bills(self, budget_id: uuid.UUID, month: int, year: int) -> list[BillModel]:
         bills = []
         for bill in self.get_bills_from_template():
             if bill["biweekly"]:
-                due_date_1, due_date_2 = self.get_bills_biweekly_dates(month, year)
-                bills.append(
-                    BillModel(
-                        id_=uuid.uuid4(),
-                        budget_id=budget_id,
-                        provider=bill["provider"],
-                        amount=bill["amount"],
-                        due_date=due_date_1,
-                        payment=bill["payment"],
+                date_list = self.get_dates(bill["provider"])
+                for a_date in date_list:
+                    bills.append(
+                        BillModel(
+                            id_=uuid.uuid4(),
+                            budget_id=budget_id,
+                            provider=bill["provider"],
+                            amount=bill["amount"],
+                            due_date=a_date,
+                            payment=bill["payment"],
+                        )
                     )
-                )
-
-                bills.append(
-                    BillModel(
-                        id_=uuid.uuid4(),
-                        budget_id=budget_id,
-                        provider=bill["provider"],
-                        amount=bill["amount"],
-                        due_date=due_date_2,
-                        payment=bill["payment"],
-                    )
-                )
             else:
                 due_date = datetime(year, month, bill["due_date"]) if bill["due_date"] else None
                 bills.append(
@@ -79,3 +75,9 @@ class BillControler:
                     )
                 )
         return bills
+
+    @staticmethod
+    def update_salary(bill_id: uuid.UUID, amount: float) -> None:
+        bill = BillModel.query.get(bill_id)
+        bill.amount = amount
+        db.session.commit()
