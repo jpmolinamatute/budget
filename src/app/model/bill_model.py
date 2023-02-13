@@ -14,5 +14,3 @@ class BillModel(db.Model):  # type: ignore[name-defined]
     due_date = db.Column(db.Date, nullable=False)
     payment = db.Column(payment_type, nullable=False)
     is_paid = db.Column(db.Boolean, nullable=False, default=False)
-
-    budget = db.relationship("Budget", back_populates="bill")

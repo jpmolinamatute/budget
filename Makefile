@@ -10,6 +10,7 @@ help:
 	@echo "To run mypy in the project type 'make typehint'"
 	@echo "To run black in the project type 'make black'"
 	@echo "To run test in the project type 'make test'"
+	@echo "To run isort in the project type 'make isort'"
 	@echo "------------------------------------"
 
 clean:
@@ -36,4 +37,4 @@ run:
 isort:
 	poetry run isort --settings-path=/home/juanpa/Projects/budget/pyproject.toml src/
 
-all: format isort lint typehint test
+all: format isort lint typehint

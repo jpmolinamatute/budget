@@ -11,7 +11,3 @@ class BudgetModel(db.Model):  # type: ignore[name-defined]
     month = db.Column(db.Integer, nullable=False)
     year = db.Column(db.Integer, nullable=False)
     is_current = db.Column(db.Boolean, nullable=False)
-
-    bill = db.relationship("Bill", back_populates="budget")
-    salary = db.relationship("Salary", back_populates="budget")
-    payment_plan = db.relationship("PaymentPlan", back_populates="budget")
