@@ -6,6 +6,7 @@ from src.app.model.enums import payment_type
 
 class PaymentPlanModel(db.Model):  # type: ignore[name-defined]
     __tablename__ = "payment_plan"
+    __table_args__ = (db.UniqueConstraint("payment", "budget_id", "salary_id", name="_date"),)
 
     id_ = db.Column("id", UUID(as_uuid=True), primary_key=True)
     payment = db.Column(payment_type, nullable=False)

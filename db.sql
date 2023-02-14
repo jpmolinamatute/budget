@@ -57,7 +57,8 @@ CREATE TABLE payment_plan (
     salary_id UUID NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     FOREIGN KEY(budget_id) REFERENCES budget(id),
-    FOREIGN KEY(salary_id) REFERENCES salary(id)
+    FOREIGN KEY(salary_id) REFERENCES salary(id),
+    UNIQUE (payment, budget_id, salary_id)
 );
 
 CREATE VIEW total_per_payment_type AS
@@ -117,7 +118,7 @@ INSERT INTO bill(id, budget_id, provider, amount, due_date, payment) VALUES
 ('2605de87-178d-4e60-9b69-09edeab64cbb', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'seguro', 42.86, '2023-02-24', 'tangerine'),
 ('0212a941-ee21-418f-8096-cd78efaf9802', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'line_of_credit', 232.08, '2023-02-23', 'rbc'),
 ('486f536c-eb05-419c-b023-050acb4bc144', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'line_of_credit', 600.00, NULL, 'rbc'),
-('43906de8-9020-44e8-a64f-ae9fbaa6a0e2', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'everyday', 600.00, NULL, 'mastercard'),
+('43906de8-9020-44e8-a64f-ae9fbaa6a0e2', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'everyday', 795.81, NULL, 'mastercard'),
 ('f3559b54-fd50-4d23-8789-7d1052f7d9c4', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'saving', 205.75, NULL, 'saving');
 
 

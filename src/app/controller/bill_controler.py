@@ -77,7 +77,24 @@ class BillControler:
         return bills
 
     @staticmethod
-    def update_salary(bill_id: uuid.UUID, amount: float) -> None:
+    def update_bill(bill_id: uuid.UUID, amount: float) -> None:
         bill = BillModel.query.get(bill_id)
         bill.amount = amount
         db.session.commit()
+
+    @staticmethod
+    def delete_bill(bill_id: uuid.UUID) -> None:
+        bill = BillModel.query.get(bill_id)
+        db.session.delete(bill)
+        db.session.commit()
+
+    @staticmethod
+    def get_total_per_payment(budget_id: uuid.UUID) -> dict[str, float]:
+        total_per_payment = {}
+        bills = BillModel.query.filter_by(budget_id=budget_id).all()
+        for bill in bills:
+            if bill.payment in total_per_payment:
+                total_per_payment[bill.payment] += bill.amount
+            else:
+                total_per_payment[bill.payment] = bill.amount
+        return total_per_payment
