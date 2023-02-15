@@ -45,5 +45,8 @@ class SalaryControler:
             raise Exception("Invalid amount type")
         db.session.commit()
 
-
-# Path: src/app/controller/salary_controler.p
+    @staticmethod
+    def end_salary(salary_id: uuid.UUID) -> None:
+        salary = SalaryModel.query.get(salary_id)
+        salary.is_passed = True
+        db.session.commit()

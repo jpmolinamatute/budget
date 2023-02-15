@@ -6,35 +6,29 @@ A budget consist of:
 2. Salary
 3. Payment plan
 
+## enums ##
+
+```sql
+DO $$ BEGIN
+    CREATE TYPE payment_type AS ENUM ('visa', 'mastercard', 'rbc', 'tangerine', 'saving');
+    CREATE TYPE provider_type AS ENUM ('city_of_ottawa', 'enbridge', 'bell', 'hiydro_ottawa', 'netflix', 'copilot', 'disney+', 'google_one', 'spotify', 'cc', 'mortgage', 'condominio', 'fit4less', 'tia', 'seguro', 'line_of_credit', 'everyday', 'saving');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+```
+
 ## Tables ##
-
-### payment_type ###
-
-```sql
-CREATE TABLE payment_type (
-    name text PRIMARY KEY
-);
-```
-
-### provider_type ###
-
-```sql
-CREATE TABLE provider_type (
-    name text PRIMARY KEY
-);
-```
 
 ### template ###
 
 ```sql
 CREATE TABLE template (
-    provider text NOT NULL,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    provider provider_type NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
-    due_date INT NOT NULL DEFAULT 0,
-    payment_type text NOT NULL,
-    biweekly BOOLEAN NOT NULL DEFAULT FALSE,
-    FOREIGN KEY(provider) REFERENCES provider_type(name),
-    FOREIGN KEY(payment_type) REFERENCES payment_type(name)
+    due_date INT DEFAULT NULL,
+    payment payment_type NOT NULL,
+    biweekly BOOLEAN NOT NULL DEFAULT FALSE
 );
 ```
 
@@ -56,15 +50,12 @@ CREATE TABLE budget (
 CREATE TABLE bill (
     id UUID PRIMARY KEY,
     budget_id UUID NOT NULL,
-    provider text NOT NULL,
+    provider provider_type NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
-    due_date DATE NOT NULL,
-    payment_type text NOT NULL,
+    due_date DATE DEFAULT NULL,
+    payment payment_type NOT NULL,
     is_paid BOOLEAN NOT NULL DEFAULT FALSE,
-    FOREIGN KEY(provider) REFERENCES provider_type(name),
-    FOREIGN KEY(budget_id) REFERENCES budget(id),
-    FOREIGN KEY(payment_type) REFERENCES payment_type(name)
-    
+    FOREIGN KEY(budget_id) REFERENCES budget(id)
 );
 ```
 
@@ -86,13 +77,13 @@ CREATE TABLE salary (
 ```sql
 CREATE TABLE payment_plan (
     id UUID PRIMARY KEY,
-    payment_type text NOT NULL,
+    payment payment_type NOT NULL,
     budget_id UUID NOT NULL,
     salary_id UUID NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     FOREIGN KEY(budget_id) REFERENCES budget(id),
-    FOREIGN KEY(payment_type) REFERENCES payment_type(name),
-    FOREIGN KEY(salary_id) REFERENCES salary(id)
+    FOREIGN KEY(salary_id) REFERENCES salary(id),
+    UNIQUE (payment, budget_id, salary_id)
 );
 ```
 
@@ -100,14 +91,15 @@ CREATE TABLE payment_plan (
 
 ```sql
 CREATE VIEW total_per_payment_type AS
-SELECT payment_type, SUM(amount)
+SELECT payment, SUM(amount)
 FROM bill
 WHERE budget_id = (
     SELECT id
     FROM budget
     WHERE is_current = TRUE
 )
-GROUP BY payment_type;
+GROUP BY payment
+HAVING SUM(amount) > 0
 ```
 
 ## Models ##
@@ -140,6 +132,6 @@ GROUP BY payment_type;
 2. /bill: [GET, POST]
 3. /bill/<bill_id>: [UPDATE, DELETE]
 4. /payment: [GET, POST]
-5. /payment/<payment_id>: [UPDATE, DELETE]
+5. /payment/<payment_id>: [UPDATE]
 6. /salary: [GET]
 7. /salary/<salary_id>: [UPDATE]

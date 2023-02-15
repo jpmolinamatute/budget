@@ -47,6 +47,7 @@ CREATE TABLE salary (
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     extra NUMERIC(8, 2) NOT NULL DEFAULT 0,
     budget_id UUID NOT NULL,
+    is_passed BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY(budget_id) REFERENCES budget(id)
 );
 
