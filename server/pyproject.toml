@@ -567,7 +567,7 @@ profile = "black"
 line_length = 120
 py_version = 310
 lines_after_imports = 2
-virtual_env = "/home/juanpa/Projects/budget/.venv"
+virtual_env = "/home/juanpa/Projects/budget/server/.venv"
 
 [tool.black]
 line-length = 120
