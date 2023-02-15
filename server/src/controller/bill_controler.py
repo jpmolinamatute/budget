@@ -4,10 +4,10 @@ from typing import TypedDict
 
 from sqlalchemy import desc
 
-from src.app.controller import get_biweekly_dates
-from src.app.model import db
-from src.app.model.bill_model import BillModel
-from src.app.model.bill_template_model import BillTemplateModel
+from src.controller import get_biweekly_dates
+from src.model import db
+from src.model.bill_model import BillModel
+from src.model.bill_template_model import BillTemplateModel
 
 
 class RawBill(TypedDict):

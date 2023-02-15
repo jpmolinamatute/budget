@@ -1,5 +1,5 @@
-from src.app.model import db
-from src.app.model.enums import payment_type, provider_type
+from src.model import db
+from src.model.enums import payment_type, provider_type
 
 
 class BillTemplateModel(db.Model):  # type: ignore[name-defined]

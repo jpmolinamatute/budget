@@ -3,9 +3,9 @@ from datetime import datetime
 
 from sqlalchemy import desc
 
-from src.app.controller import get_biweekly_dates
-from src.app.model import db
-from src.app.model.salary_model import SalaryModel
+from src.controller import get_biweekly_dates
+from src.model import db
+from src.model.salary_model import SalaryModel
 
 
 class SalaryControler:

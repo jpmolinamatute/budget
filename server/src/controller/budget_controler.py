@@ -1,8 +1,8 @@
 import uuid
 from typing import Optional
 
-from src.app.model import db
-from src.app.model.budget_model import BudgetModel
+from src.model import db
+from src.model.budget_model import BudgetModel
 
 
 class BudgetController:

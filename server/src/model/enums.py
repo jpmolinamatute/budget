@@ -2,7 +2,7 @@ from enum import Enum
 
 from sqlalchemy.dialects.postgresql import ENUM
 
-from src.app.model import db
+from src.model import db
 
 
 class PaymentType(Enum):

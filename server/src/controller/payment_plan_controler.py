@@ -1,8 +1,8 @@
 import uuid
 from typing import TypedDict
 
-from src.app.model import db
-from src.app.model.payment_plan_model import PaymentPlanModel
+from src.model import db
+from src.model.payment_plan_model import PaymentPlanModel
 
 
 class Plan(TypedDict):

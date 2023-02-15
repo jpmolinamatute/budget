@@ -6,11 +6,11 @@ from os import path
 
 from dotenv import load_dotenv
 
-from src.app import create_app
-from src.app.controller.bill_controler import BillControler
-from src.app.controller.budget_controler import BudgetController
-from src.app.controller.salary_controler import SalaryControler
-from src.app.controller.payment_plan_controler import PaymentPlanControler, Plan
+from src import create_app
+from src.controller.bill_controler import BillControler
+from src.controller.budget_controler import BudgetController
+from src.controller.salary_controler import SalaryControler
+from src.controller.payment_plan_controler import PaymentPlanControler, Plan
 
 
 def run() -> None:

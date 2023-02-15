@@ -20,21 +20,21 @@ activate_venv:
 	poetry shell
 
 lint:
-	poetry run pylint --rcfile=/home/juanpa/Projects/budget/pyproject.toml src/
+	poetry run pylint --rcfile=/home/juanpa/Projects/budget/server/pyproject.toml src/
 
 test:
 	poetry run pytest
 
 format:
-	poetry run black --config=/home/juanpa/Projects/budget/pyproject.toml src/
+	poetry run black --config=/home/juanpa/Projects/budget/server/pyproject.toml src/
 
 typehint:
-	poetry run mypy --config-file=/home/juanpa/Projects/budget/pyproject.toml src/
+	poetry run mypy --config-file=/home/juanpa/Projects/budget/server/pyproject.toml src/
 
 run:
-	/home/juanpa/Projects/budget/main.py
+	/home/juanpa/Projects/budget/server/main.py
 
 isort:
-	poetry run isort --settings-path=/home/juanpa/Projects/budget/pyproject.toml src/
+	poetry run isort --settings-path=/home/juanpa/Projects/budget/server/pyproject.toml src/
 
 all: format isort lint typehint

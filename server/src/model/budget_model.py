@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import UUID
 
-from src.app.model import db
+from src.model import db
 
 
 class BudgetModel(db.Model):  # type: ignore[name-defined]
