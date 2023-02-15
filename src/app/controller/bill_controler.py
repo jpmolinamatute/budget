@@ -90,7 +90,7 @@ class BillControler:
 
     @staticmethod
     def get_total_per_payment(budget_id: uuid.UUID) -> dict[str, float]:
-        total_per_payment = {}
+        total_per_payment: dict[str, float] = {}
         bills = BillModel.query.filter_by(budget_id=budget_id).all()
         for bill in bills:
             if bill.payment in total_per_payment:
@@ -98,3 +98,11 @@ class BillControler:
             else:
                 total_per_payment[bill.payment] = bill.amount
         return total_per_payment
+
+    @staticmethod
+    def get_total_per_provider_biweekly(total_per_payment: dict[str, float]) -> dict[str, float]:
+        total_per_payment_biweekly: dict[str, float] = {}
+
+        for payment, amount in total_per_payment.items():
+            total_per_payment_biweekly[payment] = amount / 2
+        return total_per_payment_biweekly
