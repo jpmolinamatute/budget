@@ -19,11 +19,13 @@ class RawBill(TypedDict):
 
 
 class BillControler:
-    def save_bulk(self, bills: list[BillModel]) -> None:
+    @staticmethod
+    def save_bulk(bills: list[BillModel]) -> None:
         db.session.bulk_save_objects(bills)
         db.session.commit()
 
-    def get_bills_from_template(self) -> list[RawBill]:
+    @staticmethod
+    def get_bills_from_template() -> list[RawBill]:
         template_list = BillTemplateModel.query.all()
         bill_list: list[RawBill] = []
         for bill in template_list:
@@ -100,9 +102,9 @@ class BillControler:
         return total_per_payment
 
     @staticmethod
-    def get_total_per_provider_biweekly(total_per_payment: dict[str, float]) -> dict[str, float]:
+    def get_total_per_provider_biweekly(total_per_payment: dict[str, float], number_of_weeks: int) -> dict[str, float]:
         total_per_payment_biweekly: dict[str, float] = {}
 
         for payment, amount in total_per_payment.items():
-            total_per_payment_biweekly[payment] = amount / 2
+            total_per_payment_biweekly[payment] = amount / number_of_weeks
         return total_per_payment_biweekly

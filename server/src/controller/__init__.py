@@ -10,3 +10,8 @@ def get_biweekly_dates(start_date: datetime) -> list[datetime]:
     if extra_date.month == last_date.month:
         dates.append(extra_date)
     return dates
+
+
+def get_number_of_weeks(start_date: datetime) -> int:
+    weeks_list = get_biweekly_dates(start_date)
+    return len(weeks_list)

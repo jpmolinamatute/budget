@@ -34,22 +34,18 @@ def run() -> None:
         salaries = salary_controler.process_salaries(budget_id)
         salary_controler.save_bulk(salaries)
         month_plan = bill_controler.get_total_per_payment(budget_id)
-        biweek_plan1: Plan = {
-            "budget_id": budget_id,
-            "salary_id": salaries[0].id_,
-            "item": bill_controler.get_total_per_provider_biweekly(month_plan),
-        }
-        biweek_plan2: Plan = {
-            "budget_id": budget_id,
-            "salary_id": salaries[1].id_,
-            "item": bill_controler.get_total_per_provider_biweekly(month_plan),
-        }
-        payment_plan_list = payment_plan_controler.process_payment_plan(
-            [
-                biweek_plan1,
-                biweek_plan2,
-            ]
-        )
+        number_of_biweeks = len(salaries)
+        biweek_list = []
+        item = bill_controler.get_total_per_provider_biweekly(month_plan, number_of_biweeks)
+        for salary in salaries:
+            biweek_plan1: Plan = {
+                "budget_id": budget_id,
+                "salary_id": salary.id_,
+                "item": item,
+            }
+            biweek_list.append(biweek_plan1)
+
+        payment_plan_list = payment_plan_controler.process_payment_plan(biweek_list)
         payment_plan_controler.save_bulk(payment_plan_list)
 
 
