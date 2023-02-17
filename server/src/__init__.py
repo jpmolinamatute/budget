@@ -1,18 +1,15 @@
 from os import environ
 
 from flask import Flask
-
 from src.model import db
+from src.model.bill_model import BillModel
+from src.model.bill_template_model import BillTemplateModel
+from src.model.budget_model import BudgetModel
 from src.model.enums import payment_type, provider_type
+from src.model.payment_plan_model import PaymentPlanModel
+from src.model.salary_model import SalaryModel
 from src.routes.db_route import db_endpoint
 from src.routes.web_route import web_endpoint
-
-
-from src.model.bill_template_model import BillTemplateModel  # isort:skip
-from src.model.budget_model import BudgetModel  # isort:skip
-from src.model.bill_model import BillModel  # isort:skip
-from src.model.salary_model import SalaryModel  # isort:skip
-from src.model.payment_plan_model import PaymentPlanModel  # isort:skip
 
 
 def create_app():
