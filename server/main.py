@@ -1,24 +1,19 @@
 #!/usr/bin/env python
 import logging
 import sys
-import uuid
+
 from os import path
 
 from dotenv import load_dotenv
 
 from src import create_app
-from src.controller.complete_budget_controler import CompleteBudgetControler
 
 
 def run() -> None:
     load_dotenv()
     app = create_app()
-    # app.run(debug=True)
-    with app.app_context():
-        budget = CompleteBudgetControler(3, 2023, uuid.UUID("4849cb99-b084-4024-b613-8f3e0cd1079c"))
-        budget.process_bills()
-        biweek_plan = budget.process_salaries()
-        budget.process_payment_plan(biweek_plan)
+    app.run(debug=True)
+    # with app.app_context():
 
 
 def main() -> None:

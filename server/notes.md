@@ -111,7 +111,7 @@ HAVING SUM(amount) > 0
 
 ## Generating a new budget ##
 
-1. Close current budget. Set is_current = false. Closing is only posible if all expenses arepaid. return True if it was closed
+1. Close current budget. Set is_current = false. Closing is only posible if all expenses are paid. return True if it was closed
 2. Only Open a new current budget if a previous budget was closed successfully. Set is_current = true
 3. Copy template rows into bill table, generate real duedates and process biweekly bills
 4. We need to edit the current budget a this point so that the generated payment plan (in next step) make senses. Ex there is not point to plan to pay a $0 payment type.
