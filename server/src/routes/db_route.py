@@ -1,7 +1,10 @@
 import uuid
 from http import HTTPStatus
-from flask import Blueprint, request, current_app, abort, Response
+
+from flask import Blueprint, Response, abort, current_app, request
+
 from src.controller.complete_budget_controler import CompleteBudgetControler
+
 
 db_endpoint = Blueprint("db_endpoint", __name__)
 
@@ -11,10 +14,9 @@ def create_budget():
     content = request.json
     current_app.logger.info(content)
     old_budget = uuid.UUID(content["old_budget"])
-    year = content["year"]
-    month = content["month"]
     try:
-        budget = CompleteBudgetControler(month, year, old_budget)
+        budget = CompleteBudgetControler()
+        budget.new_budget(old_budget)
         budget.process()
     except Exception as e:
         current_app.logger.error(e)

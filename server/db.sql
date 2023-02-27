@@ -26,6 +26,8 @@ CREATE TABLE budget (
     id UUID PRIMARY KEY,
     month INT NOT NULL,
     year INT NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
     is_current BOOLEAN NOT NULL DEFAULT FALSE,
     UNIQUE (month, year)
 );
@@ -47,7 +49,6 @@ CREATE TABLE salary (
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     extra NUMERIC(8, 2) NOT NULL DEFAULT 0,
     budget_id UUID NOT NULL,
-    is_passed BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY(budget_id) REFERENCES budget(id)
 );
 
@@ -57,6 +58,7 @@ CREATE TABLE payment_plan (
     budget_id UUID NOT NULL,
     salary_id UUID NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
+    is_closed BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY(budget_id) REFERENCES budget(id),
     FOREIGN KEY(salary_id) REFERENCES salary(id),
     UNIQUE (payment, budget_id, salary_id)
@@ -92,11 +94,11 @@ INSERT INTO template (provider, amount, due_date, payment, biweekly) VALUES
 ('seguro', 42.86, 24, 'tangerine', FALSE),
 ('line_of_credit', 232.08, 23, 'rbc', FALSE),
 ('line_of_credit', 500.00, NULL, 'rbc', FALSE),
-('everyday', 600.00, NULL, 'mastercard', FALSE),
+('everyday', 300.00, 0, 'mastercard', TRUE),
 ('saving', 0.00, NULL, 'saving', FALSE);
 
-INSERT INTO budget(id, month, year, is_current)
-VALUES ('4849cb99-b084-4024-b613-8f3e0cd1079c', 2, 2023, true);
+INSERT INTO budget(id, month, year, start_date, end_date, is_current)
+VALUES ('4849cb99-b084-4024-b613-8f3e0cd1079c', 2, 2023, '2023-01-20', '2023-02-17', true);
 
 INSERT INTO bill(id, budget_id, provider, amount, due_date, payment, is_paid) VALUES
 ('0fd33167-39ce-4d6c-9f23-77364b5b3bd7', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'city_of_ottawa', 200.57, '2023-02-03', 'visa', TRUE),
@@ -119,7 +121,7 @@ INSERT INTO bill(id, budget_id, provider, amount, due_date, payment, is_paid) VA
 ('2605de87-178d-4e60-9b69-09edeab64cbb', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'seguro', 42.86, '2023-02-24', 'tangerine', TRUE),
 ('0212a941-ee21-418f-8096-cd78efaf9802', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'line_of_credit', 232.08, '2023-02-23', 'rbc', TRUE),
 ('486f536c-eb05-419c-b023-050acb4bc144', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'line_of_credit', 600.00, NULL, 'rbc', TRUE),
-('43906de8-9020-44e8-a64f-ae9fbaa6a0e2', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'everyday', 795.81, NULL, 'mastercard', TRUE),
+('43906de8-9020-44e8-a64f-ae9fbaa6a0e2', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'everyday', 795.81, '2023-02-17', 'mastercard', TRUE),
 ('f3559b54-fd50-4d23-8789-7d1052f7d9c4', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'saving', 205.75, NULL, 'saving', TRUE);
 
 

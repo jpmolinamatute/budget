@@ -1,6 +1,7 @@
 from os import environ
 
 from flask import Flask
+
 from src.model import db
 from src.model.bill_model import BillModel
 from src.model.bill_template_model import BillTemplateModel
