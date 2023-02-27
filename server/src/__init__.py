@@ -8,7 +8,7 @@ from src.model.bill_template_model import BillTemplateModel
 from src.model.budget_model import BudgetModel
 from src.model.enums import payment_type, provider_type
 from src.model.income_model import IncomeModel
-from src.model.payment_plan_model import PaymentPlanModel
+from src.model.plan_model import PlanModel
 from src.routes.db_route import db_endpoint
 from src.routes.web_route import web_endpoint
 
@@ -37,7 +37,7 @@ __all__ = [
     "BudgetModel",
     "BillModel",
     "IncomeModel",
-    "PaymentPlanModel",
+    "PlanModel",
     "BillTemplateModel",
     "payment_type",
     "provider_type",

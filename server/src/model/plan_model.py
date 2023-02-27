@@ -4,7 +4,13 @@ from src.model import db
 from src.model.enums import payment_type
 
 
-class PaymentPlanModel(db.Model):  # type: ignore[name-defined]
+# @TODO: at the moment there is a Plan dependency on Income, but it should be the other way around.
+#  This means we need to delete the foreign key in Plan and add it to Income. Then we need to
+# update the PlanController and IncomeController to reflect this change. We also need to update db.
+# slq file to reflect this change.
+
+
+class PlanModel(db.Model):  # type: ignore[name-defined]
     __tablename__ = "payment_plan"
     __table_args__ = (db.UniqueConstraint("payment", "budget_id", "income_id", name="_date"),)
 

@@ -11,7 +11,7 @@ from src.model.bill_model import BillModel
 from src.model.bill_template_model import BillTemplateModel
 from src.model.budget_model import BudgetModel
 from src.model.income_model import IncomeModel
-from src.model.payment_plan_model import PaymentPlanModel
+from src.model.plan_model import PlanModel
 
 
 class RawBill(TypedDict):
@@ -27,7 +27,7 @@ class Plan(TypedDict):
     item: dict[str, float]
 
 
-BULK_TYPE_LIST = list[Union[IncomeModel, BillModel, PaymentPlanModel]]
+BULK_TYPE_LIST = list[Union[IncomeModel, BillModel, PlanModel]]
 
 
 class PrimitiveBudget(TypedDict):
@@ -252,12 +252,12 @@ class CompleteBudgetControler:
         payment_plan_list = self.get_processed_payment_plan(payment_plan)
         self.save_bulk(payment_plan_list)
 
-    def get_processed_payment_plan(self, payment_plan: list[Plan]) -> list[PaymentPlanModel]:
+    def get_processed_payment_plan(self, payment_plan: list[Plan]) -> list[PlanModel]:
         self.logger.info("Getting processed payment plan")
-        payment_plan_list: list[PaymentPlanModel] = []
+        payment_plan_list: list[PlanModel] = []
         for plan in payment_plan:
             for payment, amount in plan["item"].items():
-                payment_plan = PaymentPlanModel(
+                payment_plan = PlanModel(
                     id_=uuid.uuid4(),
                     budget_id=self.budget_id,
                     income_id=plan["income_id"],
