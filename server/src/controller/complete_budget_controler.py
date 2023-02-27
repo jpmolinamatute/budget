@@ -1,4 +1,5 @@
 import uuid
+
 from datetime import datetime, timedelta
 from typing import Optional, TypedDict, Union
 
@@ -9,8 +10,8 @@ from src.model import db
 from src.model.bill_model import BillModel
 from src.model.bill_template_model import BillTemplateModel
 from src.model.budget_model import BudgetModel
-from src.model.payment_plan_model import PaymentPlanModel
 from src.model.income_model import IncomeModel
+from src.model.payment_plan_model import PaymentPlanModel
 
 
 class RawBill(TypedDict):

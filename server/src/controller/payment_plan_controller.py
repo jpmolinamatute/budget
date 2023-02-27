@@ -1,4 +1,5 @@
 import uuid
+
 from typing import TypedDict
 
 from flask import current_app

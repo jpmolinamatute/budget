@@ -1,4 +1,5 @@
 import uuid
+
 from http import HTTPStatus
 
 from flask import Blueprint, Response, abort, current_app, request
