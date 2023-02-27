@@ -3,7 +3,7 @@
 A budget consist of:
 
 1. Bill
-2. Salary
+2. Income
 3. Payment plan
 
 ## enums ##
@@ -59,10 +59,10 @@ CREATE TABLE bill (
 );
 ```
 
-### salary ###
+### income ###
 
 ```sql
-CREATE TABLE salary (
+CREATE TABLE income (
     id UUID PRIMARY KEY,
     date DATE NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
@@ -79,11 +79,11 @@ CREATE TABLE payment_plan (
     id UUID PRIMARY KEY,
     payment payment_type NOT NULL,
     budget_id UUID NOT NULL,
-    salary_id UUID NOT NULL,
+    income_id UUID NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     FOREIGN KEY(budget_id) REFERENCES budget(id),
-    FOREIGN KEY(salary_id) REFERENCES salary(id),
-    UNIQUE (payment, budget_id, salary_id)
+    FOREIGN KEY(income_id) REFERENCES income(id),
+    UNIQUE (payment, budget_id, income_id)
 );
 ```
 
@@ -107,7 +107,7 @@ HAVING SUM(amount) > 0
 1. Budget
 2. Bill
 3. Payment plan
-4. Salary
+4. Income
 
 ## Generating a new budget ##
 
@@ -115,7 +115,7 @@ HAVING SUM(amount) > 0
 2. Only Open a new current budget if a previous budget was closed successfully. Set is_current = true
 3. Copy template rows into bill table, generate real duedates and process biweekly bills
 4. We need to edit the current budget a this point so that the generated payment plan (in next step) make senses. Ex there is not point to plan to pay a $0 payment type.
-5. Generate rows into the salary table. This means dates and how many rows per month are based on latest date from previous salaries. Get salary base from last salary row.
+5. Generate rows into the income table. This means dates and how many rows per month are based on latest date from previous salaries. Get income base from last income row.
 6. Generate rows into payment plan, get basic cost from total_per_payment_type and divide them by the number of pay checks
 
 ### Features ###
@@ -124,7 +124,7 @@ HAVING SUM(amount) > 0
 2. close previous budget
 3. update/add/remove bill. get list of bills
 4. update/add/remove payment. get list of payments
-5. update salary. get list of salaries
+5. update income. get list of salaries
 
 ### Endpoints ###
 
@@ -133,5 +133,5 @@ HAVING SUM(amount) > 0
 3. /bill/<bill_id>: [UPDATE, DELETE]
 4. /payment: [GET, POST]
 5. /payment/<payment_id>: [UPDATE]
-6. /salary: [GET]
-7. /salary/<salary_id>: [UPDATE]
+6. /income: [GET]
+7. /income/<income_id>: [UPDATE]

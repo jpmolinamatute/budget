@@ -2,13 +2,14 @@ DROP VIEW IF EXISTS total_per_payment_type;
 DROP TABLE IF EXISTS template;
 DROP TABLE IF EXISTS bill;
 DROP TABLE IF EXISTS payment_plan;
-DROP TABLE IF EXISTS salary;
+DROP TABLE IF EXISTS income;
 DROP TABLE IF EXISTS budget;
 
 
 DO $$ BEGIN
     CREATE TYPE payment_type AS ENUM ('visa', 'mastercard', 'rbc', 'tangerine', 'saving');
     CREATE TYPE provider_type AS ENUM ('city_of_ottawa', 'enbridge', 'bell', 'hiydro_ottawa', 'netflix', 'copilot', 'disney+', 'google_one', 'spotify', 'cc', 'mortgage', 'condominio', 'fit4less', 'tia', 'seguro', 'line_of_credit', 'everyday', 'saving');
+    CREATE TYPE income_type AS ENUM ('salary', 'bonus', 'other');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;
@@ -43,11 +44,11 @@ CREATE TABLE bill (
     FOREIGN KEY(budget_id) REFERENCES budget(id)
 );
 
-CREATE TABLE salary (
+CREATE TABLE income (
     id UUID PRIMARY KEY,
     date DATE NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
-    extra NUMERIC(8, 2) NOT NULL DEFAULT 0,
+    income_type income_type NOT NULL,
     budget_id UUID NOT NULL,
     FOREIGN KEY(budget_id) REFERENCES budget(id)
 );
@@ -56,12 +57,12 @@ CREATE TABLE payment_plan (
     id UUID PRIMARY KEY,
     payment payment_type NOT NULL,
     budget_id UUID NOT NULL,
-    salary_id UUID NOT NULL,
+    income_id UUID NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     is_closed BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY(budget_id) REFERENCES budget(id),
-    FOREIGN KEY(salary_id) REFERENCES salary(id),
-    UNIQUE (payment, budget_id, salary_id)
+    FOREIGN KEY(income_id) REFERENCES income(id),
+    UNIQUE (payment, budget_id, income_id)
 );
 
 CREATE VIEW total_per_payment_type AS
@@ -125,12 +126,13 @@ INSERT INTO bill(id, budget_id, provider, amount, due_date, payment, is_paid) VA
 ('f3559b54-fd50-4d23-8789-7d1052f7d9c4', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'saving', 205.75, NULL, 'saving', TRUE);
 
 
-INSERT INTO salary(id, date, amount, extra, budget_id) VALUES
-('02c19a7f-ad0d-4e49-a8b6-2cf0e0fabe06', '2023-02-03', 2920.92, 5.18, '4849cb99-b084-4024-b613-8f3e0cd1079c'),
-('6ac073f2-e40d-4ef7-8fd2-0178c0f48d53', '2023-02-17', 2920.92, 0.00, '4849cb99-b084-4024-b613-8f3e0cd1079c');
+INSERT INTO income(id, date, amount, budget_id, income_type) VALUES
+('35b93c12-47cf-4219-8f40-c05ddba9a665', '2023-02-01', 5.18, '4849cb99-b084-4024-b613-8f3e0cd1079c', 'other'),
+('02c19a7f-ad0d-4e49-a8b6-2cf0e0fabe06', '2023-02-03', 2920.92, '4849cb99-b084-4024-b613-8f3e0cd1079c', 'salary'),
+('6ac073f2-e40d-4ef7-8fd2-0178c0f48d53', '2023-02-17', 2920.92, '4849cb99-b084-4024-b613-8f3e0cd1079c', 'salary');
 
 
-INSERT INTO payment_plan(id, payment, budget_id, salary_id, amount) VALUES
+INSERT INTO payment_plan(id, payment, budget_id, income_id, amount) VALUES
 ('a9497995-8dd3-4274-8c6f-8acdd30a90fc', 'rbc', '4849cb99-b084-4024-b613-8f3e0cd1079c', '02c19a7f-ad0d-4e49-a8b6-2cf0e0fabe06', 416.04),
 ('5942f84c-8323-4315-87b6-0b32ec2b7bea', 'tangerine', '4849cb99-b084-4024-b613-8f3e0cd1079c', '02c19a7f-ad0d-4e49-a8b6-2cf0e0fabe06', 1586.25),
 ('5354beb3-123d-48a0-992f-1b40cbb737b2', 'visa', '4849cb99-b084-4024-b613-8f3e0cd1079c', '02c19a7f-ad0d-4e49-a8b6-2cf0e0fabe06', 351.60),

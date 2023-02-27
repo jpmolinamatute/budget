@@ -13,6 +13,20 @@ class PaymentType(Enum):
     saving = "saving"
 
 
+class IncomeType(Enum):
+    salary = "salary"
+    bonus = "bonus"
+    other = "other"
+
+
+income_type = ENUM(
+    IncomeType.salary.value,
+    IncomeType.bonus.value,
+    IncomeType.other.value,
+    name="income_type",
+    metadata=db.metadata,
+)
+
 payment_type = ENUM(
     PaymentType.visa.value,
     PaymentType.mastercard.value,

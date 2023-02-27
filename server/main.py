@@ -16,8 +16,8 @@ def run() -> None:
     # app.run(debug=True)
     with app.app_context():
         old_budget_id = uuid.UUID("4849cb99-b084-4024-b613-8f3e0cd1079c")
-        cbc = CompleteBudgetControler(old_budget_id)
-        cbc.new_budget()
+        cbc = CompleteBudgetControler()
+        cbc.new_budget(old_budget_id)
         cbc.process()
 
 

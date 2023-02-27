@@ -10,7 +10,7 @@ from src.model.bill_model import BillModel
 from src.model.bill_template_model import BillTemplateModel
 from src.model.budget_model import BudgetModel
 from src.model.payment_plan_model import PaymentPlanModel
-from src.model.salary_model import SalaryModel
+from src.model.income_model import IncomeModel
 
 
 class RawBill(TypedDict):
@@ -22,11 +22,11 @@ class RawBill(TypedDict):
 
 
 class Plan(TypedDict):
-    salary_id: uuid.UUID
+    income_id: uuid.UUID
     item: dict[str, float]
 
 
-BULK_TYPE_LIST = list[Union[SalaryModel, BillModel, PaymentPlanModel]]
+BULK_TYPE_LIST = list[Union[IncomeModel, BillModel, PaymentPlanModel]]
 
 
 class PrimitiveBudget(TypedDict):
@@ -184,26 +184,27 @@ class CompleteBudgetControler:
         db.session.bulk_save_objects(bulk)
         db.session.commit()
 
-    def process_salaries(self) -> None:
-        self.logger.info("Processing salaries")
-        salary_list = self.get_processed_salaries()
-        self.save_bulk(salary_list)
+    def process_income(self) -> None:
+        self.logger.info("Processing income")
+        income_list = self.get_processed_income()
+        self.save_bulk(income_list)
 
-    def get_processed_salaries(self) -> list[SalaryModel]:
-        self.logger.info("Getting processed salaries")
-        salaries = []
+    def get_processed_income(self) -> list[IncomeModel]:
+        self.logger.info("Getting processed income")
+        income = []
         for a_date in self.cut_dates:
-            salaries.append(
-                SalaryModel(
+            income.append(
+                IncomeModel(
                     id_=uuid.uuid4(),
                     date=a_date,
                     amount=2920.92,
                     budget_id=self.budget_id,
+                    income_type="salary",
                 )
             )
-        return salaries
+        return income
 
-    def get_month_bill_pan(self) -> dict[str, float]:
+    def get_month_bill_plan(self) -> dict[str, float]:
         self.logger.info("Getting bills for month plan")
         total_per_payment: dict[str, float] = {}
         bills = BillModel.query.filter_by(budget_id=self.budget_id).all()
@@ -216,7 +217,7 @@ class CompleteBudgetControler:
 
     def get_biweek_bill_plan(self) -> dict[str, float]:
         self.logger.info("Getting bills for biweekly plan")
-        month_plan = self.get_month_bill_pan()
+        month_plan = self.get_month_bill_plan()
         number_of_biweeks = len(self.cut_dates)
         total_per_payment_biweekly: dict[str, float] = {}
 
@@ -224,21 +225,21 @@ class CompleteBudgetControler:
             total_per_payment_biweekly[payment] = amount / number_of_biweeks
         return total_per_payment_biweekly
 
-    def get_salary_id_list(self) -> list[uuid.UUID]:
-        self.logger.info("Getting salary id list")
-        salary_id_list = []
-        for salary in SalaryModel.query.filter_by(budget_id=self.budget_id).all():
-            salary_id_list.append(salary.id_)
-        return salary_id_list
+    def get_income_id_list(self) -> list[uuid.UUID]:
+        self.logger.info("Getting income id list")
+        income_id_list = []
+        for income in IncomeModel.query.filter_by(budget_id=self.budget_id).all():
+            income_id_list.append(income.id_)
+        return income_id_list
 
     def get_payment_plan(self) -> list[Plan]:
         self.logger.info("Getting payment plan")
         biweek_plan = []
         item = self.get_biweek_bill_plan()
-        salary_id_list = self.get_salary_id_list()
-        for salary_id in salary_id_list:
+        income_id_list = self.get_income_id_list()
+        for income_id in income_id_list:
             biweek_plan1: Plan = {
-                "salary_id": salary_id,
+                "income_id": income_id,
                 "item": item,
             }
             biweek_plan.append(biweek_plan1)
@@ -258,7 +259,7 @@ class CompleteBudgetControler:
                 payment_plan = PaymentPlanModel(
                     id_=uuid.uuid4(),
                     budget_id=self.budget_id,
-                    salary_id=plan["salary_id"],
+                    income_id=plan["income_id"],
                     amount=amount,
                     payment=payment,
                 )
@@ -266,7 +267,7 @@ class CompleteBudgetControler:
         return payment_plan_list
 
     def process(self) -> None:
-        self.logger.info("Creating a whole new budget with bills and salaries")
+        self.logger.info("Creating a whole new budget with bills and income")
         self.process_bills()
-        self.process_salaries()
+        self.process_income()
         self.process_payment_plan()
