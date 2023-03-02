@@ -42,4 +42,4 @@ isort:
 	echo "Running isort..."
 	poetry run isort --settings-path=/home/juanpa/Projects/budget/server/pyproject.toml src/
 
-all: | format isort typehint lint
+all: format isort typehint lint

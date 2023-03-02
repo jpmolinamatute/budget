@@ -7,7 +7,7 @@ import uuid
 from dotenv import load_dotenv
 
 from src import create_app
-from src.controller.complete_budget_controler import CompleteBudgetControler
+from src.controller import create_new_budget
 
 
 def run() -> None:
@@ -16,9 +16,7 @@ def run() -> None:
     # app.run(debug=True)
     with app.app_context():
         old_budget_id = uuid.UUID("4849cb99-b084-4024-b613-8f3e0cd1079c")
-        cbc = CompleteBudgetControler()
-        cbc.new_budget(old_budget_id)
-        cbc.process()
+        create_new_budget(old_budget_id)
 
 
 def main() -> None:

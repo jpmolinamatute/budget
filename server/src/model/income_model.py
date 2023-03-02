@@ -12,4 +12,5 @@ class IncomeModel(db.Model):  # type: ignore[name-defined]
     amount = db.Column(db.Float, nullable=False, default=0.0)
     income_type = db.Column(income_type, nullable=False)
     budget_id = db.Column(db.ForeignKey("budget.id"), nullable=False)
-    payment_plan = db.relationship("PlanModel", back_populates="income")
+    plan_id = db.Column(db.ForeignKey("plan.id"), nullable=False)
+    plan = db.relationship("PlanModel", back_populates="income")
