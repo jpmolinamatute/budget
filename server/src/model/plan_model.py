@@ -11,3 +11,4 @@ class PlanModel(db.Model):  # type: ignore[name-defined]
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     income = db.relationship("IncomeModel", back_populates="plan")
+    plan_item = db.relationship("PlanItemModel", back_populates="plan")

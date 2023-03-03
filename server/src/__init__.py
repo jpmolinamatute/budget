@@ -9,8 +9,7 @@ from src.model.budget_model import BudgetModel
 from src.model.enums import payment_type, provider_type
 from src.model.income_model import IncomeModel
 from src.model.plan_model import PlanModel
-from src.routes.db_route import db_endpoint
-from src.routes.web_route import web_endpoint
+from src.routes.budget_route import budget_route
 
 
 def create_app():
@@ -26,8 +25,7 @@ def create_app():
         SQLALCHEMY_DATABASE_URI=database_uri,
     )
 
-    app.register_blueprint(db_endpoint)
-    app.register_blueprint(web_endpoint)
+    app.register_blueprint(budget_route)
     db.init_app(app)
 
     return app

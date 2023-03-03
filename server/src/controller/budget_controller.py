@@ -1,11 +1,17 @@
 import logging
 import uuid
-
+from typing import Optional, TypedDict
 from datetime import datetime, timedelta
 
 from src.model import db
 from src.model.bill_model import BillModel
 from src.model.budget_model import BudgetModel
+
+
+class SimpleBudget(TypedDict):
+    id_: uuid.UUID
+    year: int
+    month: int
 
 
 class BudgetController:
@@ -43,9 +49,17 @@ class BudgetController:
         return BudgetModel.query.filter_by(is_current=True).first().id_
 
     @staticmethod
-    def get_budget_by_id(budget_id: uuid.UUID) -> BudgetModel:
-        return BudgetModel.query.filter_by(id_=budget_id).first()
+    def get_current_budget(budget_id: Optional[uuid.UUID] = None) -> SimpleBudget:
+        if budget_id:
+            current_budget = BudgetModel.query.filter_by(id_=budget_id).first()
+        else:
+            current_budget = BudgetModel.query.filter_by(is_current=True).first()
 
-    @staticmethod
-    def get_current_budget() -> BudgetModel:
-        return BudgetModel.query.filter_by(is_current=True).first()
+        if not current_budget:
+            raise Exception("Budget not found")
+
+        return {
+            "id_": current_budget.id_,
+            "month": current_budget.month,
+            "year": current_budget.year,
+        }

@@ -11,12 +11,19 @@ from src.model.plan_item_model import PlanItemModel
 from src.model.plan_model import PlanModel
 
 
+class primitivePlanItem(TypedDict):
+    id_: uuid.UUID
+    amount: float
+    payment: str
+    is_closed: bool
+
+
 class primitivePlan(TypedDict):
     id_: uuid.UUID
-    plan_id: uuid.UUID
-    payment: str
-    amount: float
-    is_closed: bool
+    start_date: datetime
+    end_date: datetime
+    budget_id: uuid.UUID
+    plan_items: list[primitivePlanItem]
 
 
 class PlanController:
@@ -28,6 +35,7 @@ class PlanController:
         self.logger.info("Creating new plan")
         cut_dates = self.get_dates(old_budget_id)
         plan_ids = []
+
         for start_date, end_date in cut_dates:
             plan_id = uuid.uuid4()
             plan = PlanModel(
@@ -89,7 +97,6 @@ class PlanController:
             for payment, amount in item.items():
                 payment_plan = PlanItemModel(
                     id_=uuid.uuid4(),
-                    budget_id=self.budget_id,
                     plan_id=plan_id,
                     amount=amount,
                     payment=payment,
@@ -115,18 +122,32 @@ class PlanController:
         db.session.commit()
 
     @staticmethod
-    def get_plan_items() -> list[primitivePlan]:
-        payment_plan_list: list[primitivePlan] = []
+    def get_current_plan() -> list[primitivePlan]:
+        plan_list: list[primitivePlan] = []
         budget_id = BudgetController.get_current_budget_id()
-        payment_plans = PlanItemModel.query.filter_by(budget_id=budget_id).all()
-        for payment_plan in payment_plans:
-            payment_plan_list.append(
-                {
-                    "id_": payment_plan.id_,
-                    "payment": payment_plan.payment,
-                    "plan_id": payment_plan.plan_id,
-                    "amount": payment_plan.amount,
-                    "is_closed": payment_plan.is_closed,
-                }
-            )
-        return payment_plan_list
+        plans = PlanModel.query.filter_by(budget_id=budget_id).order_by(PlanModel.start_date).all()
+        stm = db.select(PlanItemModel).where(
+            PlanItemModel.plan_id.in_([plan.id_ for plan in plans])
+        )
+        result = db.session.execute(stm)
+        items = result.fetchall()
+        for plan in plans:
+            single_plan: primitivePlan = {
+                "id_": plan.id_,
+                "start_date": plan.start_date,
+                "end_date": plan.end_date,
+                "budget_id": plan.budget_id,
+                "plan_items": [],
+            }
+            for item in items:
+                if item[0].plan_id == plan.id_:
+                    single_plan["plan_items"].append(
+                        {
+                            "id_": item[0].id_,
+                            "payment": item[0].payment,
+                            "amount": item[0].amount,
+                            "is_closed": item[0].is_closed,
+                        }
+                    )
+            plan_list.append(single_plan)
+        return plan_list

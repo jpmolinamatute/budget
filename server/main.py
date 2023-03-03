@@ -2,7 +2,6 @@
 import logging
 import sys
 from os import path
-import uuid
 
 from dotenv import load_dotenv
 
@@ -15,8 +14,7 @@ def run() -> None:
     app = create_app()
     # app.run(debug=True)
     with app.app_context():
-        old_budget_id = uuid.UUID("4849cb99-b084-4024-b613-8f3e0cd1079c")
-        create_new_budget(old_budget_id)
+        create_new_budget(app.logger)
 
 
 def main() -> None:

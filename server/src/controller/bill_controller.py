@@ -35,8 +35,8 @@ class BillController:
     def create(self) -> None:
         self.logger.info("Creating new bills")
         current_budget = BudgetController.get_current_budget()
-        self.budget_id = current_budget.id_
-        bill_list = self.get_processed_bills(current_budget.year, current_budget.month)
+        self.budget_id = current_budget["id_"]
+        bill_list = self.get_processed_bills(current_budget["year"], current_budget["month"])
         self.save_bulk(bill_list)
 
     def get_bills_from_template(self) -> list[RawBill]:
