@@ -10,4 +10,4 @@ class BudgetModel(db.Model):  # type: ignore[name-defined]
     id_ = db.Column("id", UUID(as_uuid=True), primary_key=True)
     month = db.Column(db.Integer, nullable=False)
     year = db.Column(db.Integer, nullable=False)
-    is_current = db.Column(db.Boolean, nullable=False)
+    is_locked = db.Column(db.Boolean, nullable=False, default=False)

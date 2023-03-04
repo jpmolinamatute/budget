@@ -54,7 +54,7 @@ CREATE TABLE bill (
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     due_date DATE DEFAULT NULL,
     payment payment_type NOT NULL,
-    is_paid BOOLEAN NOT NULL DEFAULT FALSE,
+    is_locked BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY(budget_id) REFERENCES budget(id)
 );
 ```

@@ -24,7 +24,7 @@ class primitiveBill(TypedDict):
     amount: float
     due_date: datetime
     payment: str
-    is_paid: bool
+    is_locked: bool
 
 
 class BillController:
@@ -126,7 +126,7 @@ class BillController:
                     "amount": bill.amount,
                     "due_date": bill.due_date,
                     "payment": bill.payment,
-                    "is_paid": bill.is_paid,
+                    "is_locked": bill.is_locked,
                 }
             )
         return bills
@@ -134,7 +134,7 @@ class BillController:
     @staticmethod
     def mark_bill_paid(bill_id: uuid.UUID) -> None:
         bill = BillModel.query.filter_by(id_=bill_id).first()
-        bill.is_paid = True
+        bill.is_locked = True
         db.session.commit()
 
     @staticmethod

@@ -13,10 +13,12 @@ from src.model.plan_model import PlanModel
 
 class primitiveIncome(TypedDict):
     id_: uuid.UUID
-    name: str
+    budget_id: uuid.UUID
+    plan_id: uuid.UUID
     amount: float
     date: datetime
     income_type: IncomeType
+    is_locked: bool
 
 
 class IncomeController:
@@ -80,39 +82,47 @@ class IncomeController:
         db.session.commit()
 
     @staticmethod
-    def update_income_amount(amount: float, income_id: uuid.UUID) -> None:
-        income = IncomeModel.query.filter_by(id_=income_id).first()
-        income.amount = amount
+    def get_incomes() -> list[primitiveIncome]:
+        budget_id = BudgetController.get_current_budget_id()
+        income_list: list[primitiveIncome] = []
+        incomes = IncomeModel.query.filter_by(budget_id=budget_id).all()
+        for income in incomes:
+            income_list.append(
+                {
+                    "id_": income.id_,
+                    "date": income.date,
+                    "amount": income.amount,
+                    "income_type": income.income_type,
+                    "budget_id": income.budget_id,
+                    "plan_id": income.plan_id,
+                    "is_locked": income.is_locked,
+                }
+            )
+        return income_list
+
+    @staticmethod
+    def add_other_income(amount: float, date: datetime) -> None:
+        budget_id = BudgetController.get_current_budget_id()
+        plan_id = PlanModel.query.filter_by(budget_id=budget_id).first().id_
+        income = IncomeModel(
+            id_=uuid.uuid4(),
+            date=date,
+            amount=amount,
+            income_type="other",
+            budget_id=budget_id,
+            plan_id=plan_id,
+            is_locked=False,
+        )
+        db.session.add(income)
         db.session.commit()
 
     @staticmethod
-    def get_incomes() -> list[primitiveIncome]:
-        budget_id = BudgetController.get_current_budget_id()
-        salaries_list: list[primitiveIncome] = []
-        incomes = IncomeModel.query.filter_by(budget_id=budget_id).all()
-        for income in incomes:
-            salaries_list.append(
-                {
-                    "id_": income.id_,
-                    "name": income.name,
-                    "amount": income.amount,
-                    "date": income.date,
-                    "income_type": income.income_type,
-                }
-            )
-        return salaries_list
-
-    @staticmethod
-    def add_other_income(name: str, amount: float, date: datetime) -> None:
-        budget_id = BudgetController.get_current_budget_id()
-        income = IncomeModel(
-            name=name,
-            amount=amount,
-            date=date,
-            income_type="other",
-            budget_id=budget_id,
-        )
-        db.session.add(income)
+    def update_income(**kwargs) -> None:
+        income = IncomeModel.query.filter_by(id_=kwargs["income_id"]).first()
+        valid_keys = ["date", "amount", "income_type", "is_locked"]
+        for key, value in kwargs.items():
+            if key in valid_keys:
+                setattr(income, key, value)
         db.session.commit()
 
     @staticmethod

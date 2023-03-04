@@ -15,7 +15,7 @@ class primitivePlanItem(TypedDict):
     id_: uuid.UUID
     amount: float
     payment: str
-    is_closed: bool
+    is_locked: bool
 
 
 class primitivePlan(TypedDict):
@@ -110,15 +110,21 @@ class PlanController:
         db.session.commit()
 
     @staticmethod
-    def update__plan_item_amount(amount: float, payment_plan_id: uuid.UUID) -> None:
-        payment_plan = PlanItemModel.query.filter_by(id_=payment_plan_id).first()
+    def update__plan_item_amount(plan_item_id: uuid.UUID, amount: float) -> None:
+        payment_plan = PlanItemModel.query.filter_by(id_=plan_item_id).first()
         payment_plan.amount = amount
         db.session.commit()
 
     @staticmethod
-    def mark_plan_item_closed(payment_plan_id: uuid.UUID) -> None:
-        payment_plan = PlanItemModel.query.filter_by(id_=payment_plan_id).first()
-        payment_plan.is_closed = True
+    def mark_plan_item_closed(plan_item_id: uuid.UUID) -> None:
+        payment_plan = PlanItemModel.query.filter_by(id_=plan_item_id).first()
+        payment_plan.is_locked = True
+        db.session.commit()
+
+    @staticmethod
+    def mark_plan_item_opened(plan_item_id: uuid.UUID) -> None:
+        payment_plan = PlanItemModel.query.filter_by(id_=plan_item_id).first()
+        payment_plan.is_locked = False
         db.session.commit()
 
     @staticmethod
@@ -146,7 +152,7 @@ class PlanController:
                             "id_": item[0].id_,
                             "payment": item[0].payment,
                             "amount": item[0].amount,
-                            "is_closed": item[0].is_closed,
+                            "is_locked": item[0].is_locked,
                         }
                     )
             plan_list.append(single_plan)

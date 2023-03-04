@@ -13,4 +13,4 @@ class BillModel(db.Model):  # type: ignore[name-defined]
     amount = db.Column(db.Float, nullable=False, default=0.0)
     due_date = db.Column(db.Date, nullable=False)
     payment = db.Column(payment_type, nullable=False)
-    is_paid = db.Column(db.Boolean, nullable=False, default=False)
+    is_locked = db.Column(db.Boolean, nullable=False, default=False)

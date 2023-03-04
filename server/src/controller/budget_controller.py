@@ -1,7 +1,8 @@
 import logging
 import uuid
-from typing import Optional, TypedDict
+
 from datetime import datetime, timedelta
+from typing import Optional, TypedDict
 
 from src.model import db
 from src.model.bill_model import BillModel
@@ -20,11 +21,11 @@ class BudgetController:
 
     def close_budget(self, old_budget_id: uuid.UUID) -> BudgetModel:
         self.logger.info("Closing old budget")
-        budget = BillModel.query.filter_by(budget_id=old_budget_id, is_paid=False).all()
+        budget = BillModel.query.filter_by(budget_id=old_budget_id, is_locked=False).all()
         if len(budget) > 0:
-            raise Exception("Cannot close budget")
+            raise Exception("ERROR: Cannot close budget. There bills to be paid")
         budget = BudgetModel.query.filter_by(id_=old_budget_id).first()
-        budget.is_current = False
+        budget.is_locked = True
         db.session.commit()
         return budget
 
@@ -38,7 +39,7 @@ class BudgetController:
             id_=budget_id,
             month=new_date.month,
             year=new_date.year,
-            is_current=True,
+            is_locked=False,
         )
         db.session.add(budget)
         db.session.commit()
@@ -46,14 +47,14 @@ class BudgetController:
 
     @staticmethod
     def get_current_budget_id() -> uuid.UUID:
-        return BudgetModel.query.filter_by(is_current=True).first().id_
+        return BudgetModel.query.filter_by(is_locked=False).first().id_
 
     @staticmethod
     def get_current_budget(budget_id: Optional[uuid.UUID] = None) -> SimpleBudget:
         if budget_id:
             current_budget = BudgetModel.query.filter_by(id_=budget_id).first()
         else:
-            current_budget = BudgetModel.query.filter_by(is_current=True).first()
+            current_budget = BudgetModel.query.filter_by(is_locked=False).first()
 
         if not current_budget:
             raise Exception("Budget not found")

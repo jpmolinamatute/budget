@@ -13,4 +13,5 @@ class IncomeModel(db.Model):  # type: ignore[name-defined]
     income_type = db.Column(income_type, nullable=False)
     budget_id = db.Column(db.ForeignKey("budget.id"), nullable=False)
     plan_id = db.Column(db.ForeignKey("plan.id"), nullable=False)
+    is_locked = db.Column(db.Boolean, nullable=False, default=False)
     plan = db.relationship("PlanModel", back_populates="income")
