@@ -19,7 +19,7 @@ class IncomeType(Enum):
     other = "other"
 
 
-income_type = ENUM(
+income_type_enum = ENUM(
     IncomeType.salary.value,
     IncomeType.bonus.value,
     IncomeType.other.value,

@@ -114,7 +114,7 @@ class BillController:
         db.session.commit()
 
     @staticmethod
-    def get_bills() -> list[primitiveBill]:
+    def get_current_bill() -> list[primitiveBill]:
         budget_id = BudgetController.get_current_budget_id()
         bills = BillModel.query.filter_by(budget_id=budget_id).all()
         bill_list: list[primitiveBill] = []
@@ -129,7 +129,7 @@ class BillController:
                     "is_locked": bill.is_locked,
                 }
             )
-        return bills
+        return bill_list
 
     @staticmethod
     def mark_bill_paid(bill_id: uuid.UUID) -> None:
@@ -138,7 +138,19 @@ class BillController:
         db.session.commit()
 
     @staticmethod
-    def update_bill_amount(amount: float, bill_id: uuid.UUID) -> None:
+    def mark_bill_unpaid(bill_id: uuid.UUID) -> None:
+        bill = BillModel.query.filter_by(id_=bill_id).first()
+        bill.is_locked = False
+        db.session.commit()
+
+    @staticmethod
+    def update_bill_amount(bill_id: uuid.UUID, amount: float) -> None:
         bill = BillModel.query.filter_by(id_=bill_id).first()
         bill.amount = amount
+        db.session.commit()
+
+    @staticmethod
+    def update_bill_due_date(bill_id: uuid.UUID, date: datetime) -> None:
+        bill = BillModel.query.filter_by(id_=bill_id).first()
+        bill.due_date = date
         db.session.commit()

@@ -1,9 +1,9 @@
 import logging
 
-from src.controller.bill_controller import BillController
-from src.controller.budget_controller import BudgetController
+from src.controller.bill_controller import BillController, primitiveBill
+from src.controller.budget_controller import BudgetController, SimpleBudget
 from src.controller.income_controller import IncomeController
-from src.controller.plan_controller import PlanController
+from src.controller.plan_controller import PlanController, primitivePlan
 
 
 def create_new_budget(logger: logging.Logger) -> None:
@@ -24,4 +24,7 @@ __all__ = [
     "IncomeController",
     "PlanController",
     "create_new_budget",
+    "primitiveBill",
+    "SimpleBudget",
+    "primitivePlan",
 ]

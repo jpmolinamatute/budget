@@ -110,7 +110,7 @@ class PlanController:
         db.session.commit()
 
     @staticmethod
-    def update__plan_item_amount(plan_item_id: uuid.UUID, amount: float) -> None:
+    def update_plan_item_amount(plan_item_id: uuid.UUID, amount: float) -> None:
         payment_plan = PlanItemModel.query.filter_by(id_=plan_item_id).first()
         payment_plan.amount = amount
         db.session.commit()

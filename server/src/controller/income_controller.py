@@ -82,7 +82,7 @@ class IncomeController:
         db.session.commit()
 
     @staticmethod
-    def get_incomes() -> list[primitiveIncome]:
+    def get_current_income() -> list[primitiveIncome]:
         budget_id = BudgetController.get_current_budget_id()
         income_list: list[primitiveIncome] = []
         incomes = IncomeModel.query.filter_by(budget_id=budget_id).all()
@@ -101,14 +101,14 @@ class IncomeController:
         return income_list
 
     @staticmethod
-    def add_other_income(amount: float, date: datetime) -> None:
+    def add_income(amount: float, date: datetime, income_type: IncomeType) -> None:
         budget_id = BudgetController.get_current_budget_id()
         plan_id = PlanModel.query.filter_by(budget_id=budget_id).first().id_
         income = IncomeModel(
             id_=uuid.uuid4(),
             date=date,
             amount=amount,
-            income_type="other",
+            income_type=income_type,
             budget_id=budget_id,
             plan_id=plan_id,
             is_locked=False,
@@ -117,16 +117,37 @@ class IncomeController:
         db.session.commit()
 
     @staticmethod
-    def update_income(**kwargs) -> None:
-        income = IncomeModel.query.filter_by(id_=kwargs["income_id"]).first()
-        valid_keys = ["date", "amount", "income_type", "is_locked"]
-        for key, value in kwargs.items():
-            if key in valid_keys:
-                setattr(income, key, value)
+    def update_income_date(income_id: uuid.UUID, date: datetime) -> None:
+        income = IncomeModel.query.filter_by(id_=income_id).first()
+        income.date = date
         db.session.commit()
 
     @staticmethod
-    def delete_other_income(income_id: uuid.UUID) -> None:
+    def update_income_amount(income_id: uuid.UUID, amount: float) -> None:
+        income = IncomeModel.query.filter_by(id_=income_id).first()
+        income.amount = amount
+        db.session.commit()
+
+    @staticmethod
+    def update_income_type(income_id: uuid.UUID, income_type: IncomeType) -> None:
+        income = IncomeModel.query.filter_by(id_=income_id).first()
+        income.income_type = income_type
+        db.session.commit()
+
+    @staticmethod
+    def mark_income_close(income_id: uuid.UUID) -> None:
+        income = IncomeModel.query.filter_by(id_=income_id).first()
+        income.is_locked = True
+        db.session.commit()
+
+    @staticmethod
+    def mark_income_reopen(income_id: uuid.UUID) -> None:
+        income = IncomeModel.query.filter_by(id_=income_id).first()
+        income.is_locked = False
+        db.session.commit()
+
+    @staticmethod
+    def delete_income(income_id: uuid.UUID) -> None:
         income = IncomeModel.query.filter_by(id_=income_id).first()
         db.session.delete(income)
         db.session.commit()
