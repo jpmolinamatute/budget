@@ -151,3 +151,8 @@ class IncomeController:
         income = IncomeModel.query.filter_by(id_=income_id).first()
         db.session.delete(income)
         db.session.commit()
+
+    @staticmethod
+    def is_income_locked(income_id: uuid.UUID) -> bool:
+        income = IncomeModel.query.filter_by(id_=income_id).first()
+        return income.is_locked

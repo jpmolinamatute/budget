@@ -116,21 +116,20 @@ class PlanController:
         db.session.commit()
 
     @staticmethod
-    def mark_plan_item_closed(plan_item_id: uuid.UUID) -> None:
-        payment_plan = PlanItemModel.query.filter_by(id_=plan_item_id).first()
+    def mark_plan_closed(plan_id: uuid.UUID) -> None:
+        payment_plan = PlanModel.query.filter_by(id_=plan_id).first()
         payment_plan.is_locked = True
         db.session.commit()
 
     @staticmethod
-    def mark_plan_item_opened(plan_item_id: uuid.UUID) -> None:
-        payment_plan = PlanItemModel.query.filter_by(id_=plan_item_id).first()
+    def mark_plan_opened(plan_id: uuid.UUID) -> None:
+        payment_plan = PlanModel.query.filter_by(id_=plan_id).first()
         payment_plan.is_locked = False
         db.session.commit()
 
     @staticmethod
-    def get_current_plan() -> list[primitivePlan]:
+    def get_plan(budget_id: uuid.UUID) -> list[primitivePlan]:
         plan_list: list[primitivePlan] = []
-        budget_id = BudgetController.get_current_budget_id()
         plans = PlanModel.query.filter_by(budget_id=budget_id).order_by(PlanModel.start_date).all()
         stm = db.select(PlanItemModel).where(
             PlanItemModel.plan_id.in_([plan.id_ for plan in plans])
@@ -157,3 +156,8 @@ class PlanController:
                     )
             plan_list.append(single_plan)
         return plan_list
+
+    @staticmethod
+    def is_plan_item_locked(plan_item_id: uuid.UUID) -> bool:
+        payment_plan = PlanModel.query.filter_by(id_=plan_item_id).first()
+        return payment_plan.is_locked

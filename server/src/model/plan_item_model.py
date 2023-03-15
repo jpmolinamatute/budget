@@ -12,5 +12,4 @@ class PlanItemModel(db.Model):  # type: ignore[name-defined]
     payment = db.Column(payment_type, nullable=False)
     plan_id = db.Column(db.ForeignKey("plan.id"), nullable=False)
     amount = db.Column(db.Float, nullable=False, default=0.0)
-    is_locked = db.Column(db.Boolean, nullable=False, default=False)
     plan = db.relationship("PlanModel", back_populates="plan_item")

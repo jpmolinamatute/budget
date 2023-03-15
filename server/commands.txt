@@ -1,0 +1,28 @@
+
+# plan
+curl http://127.0.0.1:5000/api/v1/plan
+curl -X UPDATE  -H 'Content-Type: application/json' -d '{"amount": 10.56,"plan_item_id":"432732d4-3360-4d97-bf24-ee774e418d16"}' http://127.0.0.1:5000/api/v1/plan
+
+curl -X UPDATE  -H 'Content-Type: application/json' -d '{"plan_item_id":"432732d4-3360-4d97-bf24-ee774e418d16"}' http://127.0.0.1:5000/api/v1/plan/close
+curl -X UPDATE  -H 'Content-Type: application/json' -d '{"plan_item_id":"432732d4-3360-4d97-bf24-ee774e418d16"}' http://127.0.0.1:5000/api/v1/plan/reopen
+
+# income
+
+curl http://127.0.0.1:5000/api/v1/income
+curl -X POST -H 'Content-Type: application/json' -d '{"amount": 100.56,"date":"2023-03-10"}' http://127.0.0.1:5000/api/v1/income
+
+curl -X UPDATE -H 'Content-Type: application/json' -d '{"amount": 100.56,"date":"2023-03-13", }' http://127.0.0.1:5000/api/v1/income
+
+curl -X UPDATE -H 'Content-Type: application/json' -d '{"income_id": "220704a6-df42-4630-a734-60b36ca74eb9", "amount": 258.56, "is_locked": true }' http://127.0.0.1:5000/api/v1/income
+
+
+# bill
+curl http://127.0.0.1:5000/api/v1/bill
+
+curl -X UPDATE  -H 'Content-Type: application/json' -d '{"bill_id":"a870a667-0cba-4fab-b60c-fb45e0fec85c", "amount": 745.45}' http://127.0.0.1:5000/api/v1/bill
+
+curl -X UPDATE  -H 'Content-Type: application/json' -d '{"bill_id":"a870a667-0cba-4fab-b60c-fb45e0fec85c", "due_date": "2023-03-15" }' http://127.0.0.1:5000/api/v1/bill
+
+curl -X UPDATE  -H 'Content-Type: application/json' -d '{"bill_id":"a870a667-0cba-4fab-b60c-fb45e0fec85c" }' http://127.0.0.1:5000/api/v1/bill/close
+
+curl -X UPDATE  -H 'Content-Type: application/json' -d '{"bill_id":"a870a667-0cba-4fab-b60c-fb45e0fec85c" }' http://127.0.0.1:5000/api/v1/bill/reopen
