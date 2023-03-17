@@ -11,7 +11,6 @@ from src.controller.budget_controller import BudgetController
 from src.model.bill_model import BillModel
 from src.model.plan_item_model import PlanItemModel
 from src.model.plan_model import PlanModel
-from src.model.enums import PaymentType
 
 
 class primitivePlanItem(TypedDict):
@@ -78,15 +77,15 @@ class PlanController:
             dates.append((end_date2, extra_date))
         return dates
 
-    def get_bills_in_budget(self, number_of_biweeks: int) -> dict[PaymentType, float]:
+    def get_bills_in_budget(self, number_of_biweeks: int) -> dict[str, float]:
         self.logger.info("Getting bills for month plan")
-        total_per_payment: dict[PaymentType, float] = {}
+        total_per_payment: dict[str, float] = {}
         bills = self.session.query(BillModel).filter_by(budget_id=self.budget.budget_id).all()
         for bill in bills:
             if bill.payment in total_per_payment:
-                total_per_payment[bill.payment] += bill.amount
+                total_per_payment[bill.payment_type] += bill.amount
             else:
-                total_per_payment[bill.payment] = bill.amount
+                total_per_payment[bill.payment_type] = bill.amount
         for total in total_per_payment:
             total_per_payment[total] = total_per_payment[total] / number_of_biweeks
         return total_per_payment
@@ -98,12 +97,12 @@ class PlanController:
         plan_item_list: list[PlanItemModel] = []
         item = self.get_bills_in_budget(number_of_biweeks)
         for plan_id in plan_ids:
-            for payment, amount in item.items():
+            for payment_type, amount in item.items():
                 payment_plan = PlanItemModel(
                     id_=uuid.uuid4(),
                     plan_id=plan_id,
                     amount=amount,
-                    payment=payment,
+                    payment_type=payment_type,
                 )
                 plan_item_list.append(payment_plan)
         return plan_item_list

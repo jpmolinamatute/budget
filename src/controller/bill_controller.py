@@ -8,24 +8,23 @@ from sqlalchemy.orm import Session
 
 from src.controller.budget_controller import BudgetController
 from src.model.bill_model import BillModel
-from src.model.bill_template_model import BillTemplateModel
-from src.model.enums import PaymentType, ProviderType
+from src.model.reference_model import BillTemplateModel
 
 
 class RawBill(TypedDict):
-    provider: ProviderType
+    provider_type: str
     amount: float
     due_date: int
-    payment: PaymentType
+    payment_type: str
     biweekly: bool
 
 
 class primitiveBill(TypedDict):
     id_: uuid.UUID
-    provider: ProviderType
+    provider_type: str
     amount: float
     due_date: datetime
-    payment: PaymentType
+    payment_type: str
     is_locked: bool
 
 
@@ -47,10 +46,10 @@ class BillController:
         for bill in template_list:
             bill_list.append(
                 {
-                    "provider": bill.provider,
+                    "provider_type": bill.provider_type,
                     "amount": bill.amount,
                     "due_date": bill.due_date,
-                    "payment": bill.payment,
+                    "payment_type": bill.payment_type,
                     "biweekly": bill.biweekly,
                 }
             )
@@ -61,16 +60,16 @@ class BillController:
         bills = []
         for bill in self.get_bills_from_template():
             if bill["biweekly"]:
-                date_list = self.get_bill_dates(bill["provider"])
+                date_list = self.get_bill_dates(bill["provider_type"])
                 for a_date in date_list:
                     bills.append(
                         BillModel(
                             id_=uuid.uuid4(),
                             budget_id=self.budget.budget_id,
-                            provider=bill["provider"],
+                            provider_type=bill["provider_type"],
                             amount=bill["amount"],
                             due_date=a_date,
-                            payment=bill["payment"],
+                            payment_type=bill["payment_type"],
                         )
                     )
             else:
@@ -82,10 +81,10 @@ class BillController:
                     BillModel(
                         id_=uuid.uuid4(),
                         budget_id=self.budget.budget_id,
-                        provider=bill["provider"],
+                        provider_type=bill["provider_type"],
                         amount=bill["amount"],
                         due_date=due_date,
-                        payment=bill["payment"],
+                        payment_type=bill["payment_type"],
                     )
                 )
         return bills
@@ -101,9 +100,11 @@ class BillController:
             dates.append(extra_date)
         return dates
 
-    def get_bill_dates(self, provider: ProviderType) -> list[datetime]:
+    def get_bill_dates(self, provider_type: str) -> list[datetime]:
         self.logger.info("Getting bill dates for a given provider based on last bill")
-        bill_filtered = self.session.query(BillModel.due_date).filter_by(provider=provider)
+        bill_filtered = self.session.query(BillModel.due_date).filter_by(
+            provider_type=provider_type
+        )
         bill = bill_filtered.order_by(BillModel.due_date.desc()).first()
         if bill is None:
             raise Exception("No bill found")
@@ -121,10 +122,10 @@ class BillController:
             bill_list.append(
                 {
                     "id_": bill.id_,
-                    "provider": bill.provider,
+                    "provider_type": bill.provider_type,
                     "amount": bill.amount,
                     "due_date": bill.due_date,
-                    "payment": bill.payment,
+                    "payment_type": bill.payment_type,
                     "is_locked": bill.is_locked,
                 }
             )

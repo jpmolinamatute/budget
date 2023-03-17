@@ -2,7 +2,7 @@ import logging
 import uuid
 
 from datetime import datetime, timedelta
-from typing import Optional, TypedDict
+from typing import Optional
 
 from sqlalchemy.orm import Session
 

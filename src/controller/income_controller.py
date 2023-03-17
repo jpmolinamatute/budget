@@ -7,7 +7,6 @@ from typing import TypedDict
 from sqlalchemy.orm import Session
 
 from src.controller.budget_controller import BudgetController
-from src.model.enums import IncomeType
 from src.model.income_model import IncomeModel
 from src.model.plan_model import PlanModel
 
@@ -18,7 +17,7 @@ class primitiveIncome(TypedDict):
     plan_id: uuid.UUID
     amount: float
     date: datetime
-    income_type: IncomeType
+    income_type: str
     is_locked: bool
 
 
@@ -101,7 +100,7 @@ class IncomeController:
             )
         return income_list
 
-    def add_income(self, amount: float, date: datetime, income_type: IncomeType) -> None:
+    def add_income(self, amount: float, date: datetime, income_type: str) -> None:
         plan = self.session.query(PlanModel).filter_by(budget_id=self.budget.budget_id).first()
         if plan is None:
             raise Exception("No plan found")
@@ -131,7 +130,7 @@ class IncomeController:
         income.amount = amount
         self.session.commit()
 
-    def update_income_type(self, income_id: uuid.UUID, income_type: IncomeType) -> None:
+    def update_income_type(self, income_id: uuid.UUID, income_type: str) -> None:
         income = self.session.query(IncomeModel).filter_by(id_=income_id).first()
         if income is None:
             raise Exception("No income found")

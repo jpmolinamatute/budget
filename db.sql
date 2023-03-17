@@ -1,27 +1,35 @@
-DROP VIEW IF EXISTS total_per_payment_type;
+-- DROP VIEW IF EXISTS total_per_payment_type;
 DROP TABLE IF EXISTS template;
 DROP TABLE IF EXISTS bill;
 DROP TABLE IF EXISTS income;
 DROP TABLE IF EXISTS plan_item;
 DROP TABLE IF EXISTS plan;
 DROP TABLE IF EXISTS budget;
+DROP TABLE IF EXISTS income_type;
+DROP TABLE IF EXISTS provider_type;
+DROP TABLE IF EXISTS payment_type;
 
+CREATE TABLE income_type(
+    name TEXT PRIMARY KEY
+);
 
-DO $$ BEGIN
-    CREATE TYPE payment_type AS ENUM ('visa', 'mastercard', 'rbc', 'tangerine', 'saving');
-    CREATE TYPE provider_type AS ENUM ('city_of_ottawa', 'enbridge', 'bell', 'hiydro_ottawa', 'netflix', 'copilot', 'disneyplus', 'google_one', 'spotify', 'cc', 'mortgage', 'condominio', 'fit4less', 'tia', 'seguro', 'line_of_credit', 'everyday', 'saving');
-    CREATE TYPE income_type AS ENUM ('salary', 'bonus', 'other');
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
+CREATE TABLE provider_type(
+    name TEXT PRIMARY KEY
+);
+
+CREATE TABLE payment_type(
+    name TEXT PRIMARY KEY
+);
 
 CREATE TABLE template (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    provider provider_type NOT NULL,
+    provider_type TEXT NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     due_date INT DEFAULT NULL,
-    payment payment_type NOT NULL,
-    biweekly BOOLEAN NOT NULL DEFAULT FALSE
+    payment_type TEXT NOT NULL,
+    biweekly BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY(provider_type) REFERENCES provider_type(name),
+    FOREIGN KEY(payment_type) REFERENCES payment_type(name)
 );
 
 CREATE TABLE budget (
@@ -43,49 +51,60 @@ CREATE TABLE plan(
 
 CREATE TABLE plan_item (
     id UUID PRIMARY KEY,
-    payment payment_type NOT NULL,
+    payment_type TEXT NOT NULL,
     plan_id UUID NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     FOREIGN KEY(plan_id) REFERENCES plan(id),
-    UNIQUE (payment, plan_id)
+    FOREIGN KEY(payment_type) REFERENCES payment_type(name),
+    UNIQUE (payment_type, plan_id)
 );
 
 CREATE TABLE income (
     id UUID PRIMARY KEY,
     date DATE NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
-    income_type income_type NOT NULL,
+    income_type TEXT NOT NULL,
     budget_id UUID NOT NULL,
     plan_id UUID NOT NULL,
     is_locked BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY(budget_id) REFERENCES budget(id),
-    FOREIGN KEY(plan_id) REFERENCES plan(id)
+    FOREIGN KEY(plan_id) REFERENCES plan(id),
+    FOREIGN KEY(income_type) REFERENCES income_type(name)
 );
 
 CREATE TABLE bill (
     id UUID PRIMARY KEY,
     budget_id UUID NOT NULL,
-    provider provider_type NOT NULL,
+    provider_type TEXT NOT NULL,
     amount NUMERIC(8, 2) NOT NULL DEFAULT 0,
     due_date DATE DEFAULT NULL,
-    payment payment_type NOT NULL,
+    payment_type TEXT NOT NULL,
     is_locked BOOLEAN NOT NULL DEFAULT FALSE,
-    FOREIGN KEY(budget_id) REFERENCES budget(id)
+    FOREIGN KEY(budget_id) REFERENCES budget(id),
+    FOREIGN KEY(provider_type) REFERENCES provider_type(name),
+    FOREIGN KEY(payment_type) REFERENCES payment_type(name)
 );
 
 
-CREATE VIEW total_per_payment_type AS
-SELECT payment, SUM(amount)
-FROM bill
-WHERE budget_id = (
-    SELECT id
-    FROM budget
-    WHERE is_locked = TRUE
-)
-GROUP BY payment
-HAVING SUM(amount) > 0;
+-- CREATE VIEW total_per_payment_type AS
+-- SELECT payment, SUM(amount)
+-- FROM bill
+-- WHERE budget_id = (
+--     SELECT id
+--     FROM budget
+--     WHERE is_locked = TRUE
+-- )
+-- GROUP BY payment
+-- HAVING SUM(amount) > 0;
 
-INSERT INTO template (provider, amount, due_date, payment, biweekly) VALUES 
+INSERT INTO payment_type (name) VALUES 
+('visa'), ('mastercard'), ('rbc'), ('tangerine'), ('saving');
+INSERT INTO provider_type (name) VALUES 
+('city_of_ottawa'), ('enbridge'), ('bell'), ('hiydro_ottawa'), ('netflix'), ('copilot'), ('disneyplus'), ('google_one'), ('spotify'), ('cc'), ('mortgage'), ('condominio'), ('fit4less'), ('tia'), ('seguro'), ('line_of_credit'), ('everyday'), ('saving');
+INSERT INTO income_type (name) VALUES 
+('salary'), ('bonus'), ('other');
+
+INSERT INTO template (provider_type, amount, due_date, payment_type, biweekly) VALUES 
 ('city_of_ottawa', 0.0, 3, 'visa', FALSE),
 ('enbridge', 0.0, 6, 'visa', FALSE),
 ('bell', 160.67, 28, 'visa', FALSE),
@@ -107,6 +126,7 @@ INSERT INTO template (provider, amount, due_date, payment, biweekly) VALUES
 ('everyday', 300.00, 0, 'mastercard', TRUE),
 ('saving', 0.00, NULL, 'saving', FALSE);
 
+
 INSERT INTO budget(id, month, year, is_locked)
 VALUES ('4849cb99-b084-4024-b613-8f3e0cd1079c', 2, 2023, FALSE);
 
@@ -116,7 +136,7 @@ INSERT INTO plan(id, budget_id, start_date, end_date, is_locked) VALUES
 ('b3708541-388d-45cf-8abe-6a69f15c7537', '4849cb99-b084-4024-b613-8f3e0cd1079c', '2023-02-03', '2023-02-17', TRUE);
 
 
-INSERT INTO plan_item(id, payment, plan_id, amount) VALUES
+INSERT INTO plan_item(id, payment_type, plan_id, amount) VALUES
 ('a9497995-8dd3-4274-8c6f-8acdd30a90fc', 'rbc', '7a698a7d-9d77-4106-aabb-1e9ade024812', 416.04),
 ('5942f84c-8323-4315-87b6-0b32ec2b7bea', 'tangerine', '7a698a7d-9d77-4106-aabb-1e9ade024812', 1586.25),
 ('5354beb3-123d-48a0-992f-1b40cbb737b2', 'visa', '7a698a7d-9d77-4106-aabb-1e9ade024812', 351.60),
@@ -135,7 +155,7 @@ INSERT INTO income(id, date, amount, budget_id, income_type, plan_id, is_locked)
 ('02c19a7f-ad0d-4e49-a8b6-2cf0e0fabe06', '2023-02-03', 2920.92, '4849cb99-b084-4024-b613-8f3e0cd1079c', 'salary', '7a698a7d-9d77-4106-aabb-1e9ade024812', TRUE),
 ('6ac073f2-e40d-4ef7-8fd2-0178c0f48d53', '2023-02-17', 2920.92, '4849cb99-b084-4024-b613-8f3e0cd1079c', 'salary', 'b3708541-388d-45cf-8abe-6a69f15c7537', TRUE);
 
-INSERT INTO bill(id, budget_id, provider, amount, due_date, payment, is_locked) VALUES
+INSERT INTO bill(id, budget_id, provider_type, amount, due_date, payment_type, is_locked) VALUES
 ('0fd33167-39ce-4d6c-9f23-77364b5b3bd7', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'city_of_ottawa', 200.57, '2023-02-03', 'visa', TRUE),
 ('4bb043a3-d888-4073-a94b-7f8e1de19b78', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'enbridge', 169.82, '2023-02-06', 'visa', TRUE),
 ('cd0c2726-1622-4c6d-b15c-94a99bd839b8', '4849cb99-b084-4024-b613-8f3e0cd1079c', 'bell', 74.46, '2023-02-28', 'visa', TRUE),

@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 from src.controller import create_new_budget
+from src.gui.window import window
 
 
 def run(logger: logging.Logger) -> None:
@@ -28,7 +29,8 @@ def main() -> None:
     logger = logging.getLogger(__name__)
     try:
         logging.info(f"Script {path.basename(__file__)} has started")
-        run(logger)
+        load_dotenv()
+        window()
         logging.info("Bye!")
     except Exception as err:
         logging.exception(err)
