@@ -1,0 +1,44 @@
+{
+    "editor.rulers": [
+        100
+    ],
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 100,
+    "python.formatting.provider": "black",
+    "python.formatting.blackPath": "./.venv/bin/black",
+    "python.formatting.blackArgs": [
+        "--config=./pyproject.toml"
+    ],
+    "python.linting.mypyEnabled": true,
+    "python.linting.mypyPath": "./.venv/bin/mypy",
+    "python.linting.mypyArgs": [
+        "--config-file=./pyproject.toml"
+    ],
+    "isort.importStrategy": "fromEnvironment",
+    "isort.interpreter": [
+        "./.venv/bin/python"
+    ],
+    "isort.path": [
+        "./.venv/bin/isort"
+    ],
+    "pylint.importStrategy": "fromEnvironment",
+    "pylint.interpreter": [
+        "./.venv/bin/python"
+    ],
+    "pylint.path": [
+        "./.venv/bin/pylint"
+    ],
+    "pylint.args": [
+        "--rcfile=./pyproject.toml"
+    ],
+    "python.testing.pytestPath": "./.venv/bin/pytest",
+    "python.defaultInterpreterPath": "./.venv/bin/python",
+    "qtForPython.lupdate.path": "./.venv/bin/pyside6-lupdate",
+    "qtForPython.qml.path": "./.venv/bin/pyside6-qml",
+    "qtForPython.qmlls.path": "./.venv/bin/pyside6-qmlls",
+    "qtForPython.rcc.path": "./.venv/bin/pyside6-rcc",
+    "qtForPython.uic.path": "./.venv/bin/pyside6-uic",
+    "qtForPython.linguist.path": "./.venv/bin/pyside6-linguist",
+    "qtForPython.lrelease.path": "./.venv/bin/pyside6-lrelease",
+    "qtForPython.designer.path": "./.venv/bin/pyside6-designer"
+}

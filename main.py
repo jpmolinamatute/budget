@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 from src.controller import create_new_budget
-from src.gui.window import window
+from src.gui.load_design import window
 
 
 def run(logger: logging.Logger) -> None:
@@ -26,11 +26,13 @@ def run(logger: logging.Logger) -> None:
 def main() -> None:
     exit_status = 0
     logging.basicConfig(level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
+
     try:
         logging.info(f"Script {path.basename(__file__)} has started")
         load_dotenv()
-        window()
+        if len(sys.argv) < 1:
+            raise ValueError("Missing argument")
+        window(sys.argv[1])
         logging.info("Bye!")
     except Exception as err:
         logging.exception(err)
