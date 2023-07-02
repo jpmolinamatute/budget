@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from uuid import UUID
 
@@ -6,6 +8,8 @@ from sqlalchemy.schema import ForeignKey
 
 from src.model import Base
 from src.model.budget_model import BudgetModel
+from src.model.income_model import IncomeModel
+from src.model.plan_item_model import PlanItemModel
 
 
 class PlanModel(Base):
@@ -18,5 +22,5 @@ class PlanModel(Base):
     is_locked: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     budget: Mapped[BudgetModel] = relationship(back_populates="plan")
-    income: Mapped[list["IncomeModel"]] = relationship(back_populates="plan")
-    plan_item: Mapped[list["PlanItemModel"]] = relationship(back_populates="plan")
+    income: Mapped[list[IncomeModel]] = relationship(back_populates="plan")
+    plan_item: Mapped[list[PlanItemModel]] = relationship(back_populates="plan")

@@ -1,9 +1,14 @@
+from __future__ import annotations
+
 from uuid import UUID
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import UniqueConstraint
 
 from src.model import Base
+from src.model.bill_model import BillModel
+from src.model.income_model import IncomeModel
+from src.model.plan_model import PlanModel
 
 
 class BudgetModel(Base):
@@ -15,6 +20,6 @@ class BudgetModel(Base):
     year: Mapped[int] = mapped_column(nullable=False)
     is_locked: Mapped[bool] = mapped_column(default=False, nullable=False)
 
-    plan: Mapped[list["PlanModel"]] = relationship(back_populates="budget")
-    bill: Mapped[list["BillModel"]] = relationship(back_populates="budget")
-    income: Mapped[list["IncomeModel"]] = relationship(back_populates="budget")
+    plan: Mapped[list[PlanModel]] = relationship(back_populates="budget")
+    bill: Mapped[list[BillModel]] = relationship(back_populates="budget")
+    income: Mapped[list[IncomeModel]] = relationship(back_populates="budget")

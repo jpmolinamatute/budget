@@ -1,14 +1,19 @@
+from __future__ import annotations
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import ForeignKey
 
 from src.model import Base
+from src.model.income_model import IncomeModel
+from src.model.bill_model import BillModel
+from src.model.plan_item_model import PlanItemModel
 
 
 class IncomeTypeModel(Base):
     __tablename__ = "income_type"
 
     name: Mapped[str] = mapped_column(primary_key=True)
-    income: Mapped[list["IncomeModel"]] = relationship(back_populates="income")
+    income: Mapped[list[IncomeModel]] = relationship(back_populates="income")
 
 
 class ProviderTypeModel(Base):
@@ -25,9 +30,9 @@ class PaymentTypeModel(Base):
 
     name: Mapped[str] = mapped_column(primary_key=True)
 
-    bill_template: Mapped[list["BillTemplateModel"]] = relationship(back_populates="payment")
-    bill: Mapped[list["BillModel"]] = relationship(back_populates="payment")
-    plan_item: Mapped[list["PlanItemModel"]] = relationship(back_populates="payment")
+    bill_template: Mapped[list[BillTemplateModel]] = relationship(back_populates="payment")
+    bill: Mapped[list[BillModel]] = relationship(back_populates="payment")
+    plan_item: Mapped[list[PlanItemModel]] = relationship(back_populates="payment")
 
 
 class BillTemplateModel(Base):

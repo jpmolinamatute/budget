@@ -7,6 +7,7 @@ class PaymentType(Enum):
     rbc = "rbc"
     tangerine = "tangerine"
     saving = "saving"
+    desjardins = "desjardins"
 
 
 class IncomeType(Enum):

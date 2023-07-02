@@ -1,51 +1,68 @@
 from invoke import task, Collection
+from invoke.context import Context
 
 ns = Collection()
 
 
-@task
-def run_isort(c) -> None:
+def __isort(ctx: Context) -> None:
     """Run isort on source"""
     print("Running ISORT")
     print("-------------")
-    c.run("isort --settings-path=./pyproject.toml src/", pty=True)
+    ctx.run("isort --settings-path=./pyproject.toml src/", pty=True)
     print("Done")
 
 
-@task
-def run_black(c) -> None:
+def __black(ctx: Context) -> None:
     """Run black code formatter on source"""
     print("Running BLACK")
     print("-------------")
-    c.run("black --config=./pyproject.toml src/", pty=True)
+    ctx.run("black --config=./pyproject.toml src/", pty=True)
     print("Done")
 
 
-@task
-def run_pylint(c) -> None:
+def __pylint(ctx: Context) -> None:
     """Run pylint on source"""
     print("Running PYLINT")
     print("--------------")
-    c.run("pylint --rcfile=./pyproject.toml src/", pty=True)
+    ctx.run("pylint --rcfile=./pyproject.toml src/", pty=True)
     print("Done")
 
 
-@task
-def run_mypy(c) -> None:
+def __mypy(ctx: Context) -> None:
     """Run mypy type checking on source"""
     print("Running MYPY")
     print("------------")
-    c.run("mypy --config-file=./pyproject.toml --check-untyped-defs src/", pty=True)
+    ctx.run("mypy --config-file=./pyproject.toml --check-untyped-defs src/", pty=True)
     print("Done")
 
 
 @task
-def run_all(c) -> None:
+def run_isort(ctx: Context) -> None:
+    __isort(ctx)
+
+
+@task
+def run_black(ctx: Context) -> None:
+    __black(ctx)
+
+
+@task
+def run_pylint(ctx: Context) -> None:
+    __pylint(ctx)
+
+
+@task
+def run_mypy(ctx: Context) -> None:
+    __mypy(ctx)
+
+
+@task
+def run_all(ctx: Context) -> None:
     """Run all code quality checks"""
-    run_isort(c)
-    run_black(c)
-    run_pylint(c)
-    run_mypy(c)
+    __isort(ctx)
+    __black(ctx)
+    __pylint(ctx)
+    __mypy(ctx)
 
 
 ns = Collection()
