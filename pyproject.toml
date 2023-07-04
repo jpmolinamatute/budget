@@ -6,7 +6,7 @@ authors = ["Juan Pablo Molina Matute <jpmolinamatute@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.10.8"
+python = "3.11.4"
 psycopg2 = "^2.9.5"
 python-dotenv = "^0.21.1"
 sqlalchemy = "^2.0.6"
@@ -106,7 +106,7 @@ persistent = true
 
 # Minimum Python version to use for version dependent checks. Will default to the
 # version used to run pylint.
-py-version = "3.10"
+py-version = "3.11"
 
 # Discover python modules and packages in the file system subtree.
 # recursive =
@@ -567,17 +567,19 @@ redefining-builtins-modules = ["six.moves", "past.builtins", "future.builtins", 
 [tool.isort]
 profile = "black"
 line_length = 100
-py_version = 310
+py_version = 311
 lines_after_imports = 2
 lines_between_types = 1
 virtual_env = "./.venv"
+use_parentheses = true
+overwrite_in_place = true
 
 [tool.black]
 line-length = 100
-target-version = ["py310"]
+target-version = ["py311"]
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.11"
 sqlite_cache = true
 follow_imports = "silent"
 ignore_missing_imports = true

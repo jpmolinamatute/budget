@@ -4,8 +4,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import ForeignKey
 
 from src.model import Base
-from src.model.income_model import IncomeModel
 from src.model.bill_model import BillModel
+from src.model.income_model import IncomeModel
 from src.model.plan_item_model import PlanItemModel
 
 

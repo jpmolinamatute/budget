@@ -8,7 +8,7 @@ def __isort(ctx: Context) -> None:
     """Run isort on source"""
     print("Running ISORT")
     print("-------------")
-    ctx.run("isort --settings-path=./pyproject.toml src/", pty=True)
+    ctx.run("isort --settings-path=./pyproject.toml src/")
     print("Done")
 
 
@@ -16,7 +16,7 @@ def __black(ctx: Context) -> None:
     """Run black code formatter on source"""
     print("Running BLACK")
     print("-------------")
-    ctx.run("black --config=./pyproject.toml src/", pty=True)
+    ctx.run("black --config=./pyproject.toml src/")
     print("Done")
 
 
@@ -24,7 +24,7 @@ def __pylint(ctx: Context) -> None:
     """Run pylint on source"""
     print("Running PYLINT")
     print("--------------")
-    ctx.run("pylint --rcfile=./pyproject.toml src/", pty=True)
+    ctx.run("pylint --rcfile=./pyproject.toml src/")
     print("Done")
 
 
@@ -32,7 +32,7 @@ def __mypy(ctx: Context) -> None:
     """Run mypy type checking on source"""
     print("Running MYPY")
     print("------------")
-    ctx.run("mypy --config-file=./pyproject.toml --check-untyped-defs src/", pty=True)
+    ctx.run("mypy --config-file=./pyproject.toml --check-untyped-defs src/")
     print("Done")
 
 
