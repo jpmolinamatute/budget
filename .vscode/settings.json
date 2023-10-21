@@ -1,10 +1,10 @@
 {
-    "qtForPython.lupdate.path": "${workspaceFolder}/.venv/bin/pyside6-lupdate",
-    "qtForPython.qml.path": "${workspaceFolder}/.venv/bin/pyside6-qml",
-    "qtForPython.qmlls.path": "${workspaceFolder}/.venv/bin/pyside6-qmlls",
-    "qtForPython.rcc.path": "${workspaceFolder}/.venv/bin/pyside6-rcc",
-    "qtForPython.uic.path": "${workspaceFolder}/.venv/bin/pyside6-uic",
-    "qtForPython.linguist.path": "${workspaceFolder}/.venv/bin/pyside6-linguist",
-    "qtForPython.lrelease.path": "${workspaceFolder}/.venv/bin/pyside6-lrelease",
-    "qtForPython.designer.path": "${workspaceFolder}/.venv/bin/pyside6-designer"
+    "qtForPython.lupdate.path": "./.venv/bin/pyside6-lupdate",
+    "qtForPython.qml.path": "./.venv/bin/pyside6-qml",
+    "qtForPython.qmlls.path": "./.venv/bin/pyside6-qmlls",
+    "qtForPython.rcc.path": "./.venv/bin/pyside6-rcc",
+    "qtForPython.uic.path": "./.venv/bin/pyside6-uic",
+    "qtForPython.linguist.path": "./.venv/bin/pyside6-linguist",
+    "qtForPython.lrelease.path": "./.venv/bin/pyside6-lrelease",
+    "qtForPython.designer.path": "./.venv/bin/pyside6-designer"
 }
